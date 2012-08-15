@@ -28,6 +28,8 @@
  *
  */
 
+
+
 #include "global.h"
 
 //#define DEBUG 0
@@ -75,7 +77,8 @@ static const struct keyword_token keywords[] = {
 };
 
 /*---------------------------------------------------------------------------*/
-static uint8_t singlechar(void) {
+static uint8_t singlechar(void) 
+{
 	if (*ptr == '\n') {
 		return TOKENIZER_CR;
 	} else if (*ptr == ',') {
@@ -110,7 +113,8 @@ static uint8_t singlechar(void) {
 	return 0;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t get_next_token(void) {
+static uint8_t get_next_token(void) 
+{
 	struct keyword_token const *kt;
 	uint8_t i;
 
@@ -163,16 +167,19 @@ static uint8_t get_next_token(void) {
 	return TOKENIZER_ERROR;
 }
 /*---------------------------------------------------------------------------*/
-void tokenizer_init(const char *program) {
+void tokenizer_init(const char *program) 
+{
 	ptr = program;
 	current_token = get_next_token();
 }
 /*---------------------------------------------------------------------------*/
-uint8_t tokenizer_token(void) {
+uint8_t tokenizer_token(void) 
+{
 	return current_token;
 }
 /*---------------------------------------------------------------------------*/
-void tokenizer_next(void) {
+void tokenizer_next(void) 
+{
 
 	if (tokenizer_finished()) {
 		return;
@@ -187,11 +194,13 @@ void tokenizer_next(void) {
 	return;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t tokenizer_num(void) {
+uint8_t tokenizer_num(void) 
+{
 	return atoi(ptr);
 }
 /*---------------------------------------------------------------------------*/
-void tokenizer_string(char *dest, uint8_t len) {
+void tokenizer_string(char *dest, uint8_t len) 
+{
 	char *string_end;
 	uint8_t string_len;
 
@@ -210,15 +219,18 @@ void tokenizer_string(char *dest, uint8_t len) {
 	dest[string_len] = 0;
 }
 /*---------------------------------------------------------------------------*/
-void tokenizer_error_print(void) {
+void tokenizer_error_print(void) 
+{
 	// DEBUG_PRINTF("tokenizer_error_print: '%s'\n", ptr);
 }
 /*---------------------------------------------------------------------------*/
-uint8_t tokenizer_finished(void) {
+uint8_t tokenizer_finished(void) 
+{
 	return *ptr == 0 || current_token == TOKENIZER_ENDOFINPUT;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t tokenizer_variable_num(void) {
+uint8_t tokenizer_variable_num(void) 
+{
 	return *ptr - 'a';
 }
 /*---------------------------------------------------------------------------*/
