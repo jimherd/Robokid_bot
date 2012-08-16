@@ -34,7 +34,7 @@
  // Jim Herd : added code for Robokid robot
  ///////////////////////////////////////////////////////
 
-//#define DEBUG 0
+#define DEBUG 0
 
 //#define DEBUG 0
 
@@ -57,12 +57,12 @@ static int16_t variables[MAX_VARNUM];
 static uint8_t ended;
 
 static int16_t expr(void);
-//static void line_statement(void);
+static void line_statement(void);
 static void statement(void);
 
-
+static uint8_t  gUbasic_Error;
 /*---------------------------------------------------------------------------*/
-void ubasic_init(char *program) 
+void ubasic_init(const char *program) 
 {
 	program_ptr = program;
 
@@ -84,7 +84,7 @@ static void accept(uint8_t token)
 /*---------------------------------------------------------------------------*/
 static int16_t varfactor(void) 
 {
-	int16_t r;
+	int r;
 	// DEBUG_PRINTF("varfactor: obtaining %d from variable %d\n", variables[tokenizer_variable_num()], tokenizer_variable_num());
 	r = ubasic_get_variable(tokenizer_variable_num());
 	accept(TOKENIZER_VARIABLE);
@@ -121,9 +121,8 @@ static int16_t term(void)
 
 	f1 = factor();
 	op = tokenizer_token();
-    // DEBUG_PRINTF("term: token %d\n", op);
-    while (op == TOKENIZER_ASTR ||
-           op == TOKENIZER_SLASH || op == TOKENIZER_MOD) {
+	// DEBUG_PRINTF("term: token %d\n", op);
+	while (op == TOKENIZER_ASTR || op == TOKENIZER_SLASH || op == TOKENIZER_MOD) {
 		tokenizer_next();
 		f2 = factor();
 		// DEBUG_PRINTF("term: %d %d %d\n", f1, op, f2);
@@ -154,7 +153,6 @@ static int16_t expr(void)
     // DEBUG_PRINTF("expr: token %d\n", op);
     while (op == TOKENIZER_PLUS ||
            op == TOKENIZER_MINUS ||
-           op == TOKENIZER_AND || op == TOKENIZER_OR) {
 		tokenizer_next();
 		t2 = term();
 		// DEBUG_PRINTF("expr: %d %d %d\n", t1, op, t2);
@@ -177,7 +175,6 @@ static int16_t expr(void)
 	// DEBUG_PRINTF("expr: %d\n", t1);
 	return t1;
 }
-
 /*---------------------------------------------------------------------------*/
 static int16_t relation(void) 
 {
@@ -193,14 +190,14 @@ static int16_t relation(void)
 		// DEBUG_PRINTF("relation: %d %d %d\n", r1, op, r2);
 		switch(op) {
 			case TOKENIZER_LT:
-				r1 = r1 < r2;
-				break;
+			r1 = r1 < r2;
+			break;
 			case TOKENIZER_GT:
-				r1 = r1 > r2;
-				break;
+			r1 = r1 > r2;
+			break;
 			case TOKENIZER_EQ:
-				r1 = r1 == r2;
-				break;
+			r1 = r1 == r2;
+			break;
 		}
 		op = tokenizer_token();
 	}
@@ -212,7 +209,6 @@ static void print_statement(void)
 {
 	accept(TOKENIZER_PRINT);
 	do {
-        // DEBUG_PRINTF("Print loop\n");
 		if(tokenizer_token() == TOKENIZER_STRING) {
 			tokenizer_string(string, sizeof(string));
 			send_msg(string);
@@ -220,21 +216,19 @@ static void print_statement(void)
 		} else if(tokenizer_token() == TOKENIZER_COMMA) {
 			send_msg(" ");
 			tokenizer_next();
-		//} else if(tokenizer_token() == TOKENIZER_SEMICOLON) {
-		//	tokenizer_next();
-		} else if((tokenizer_token() == TOKENIZER_VARIABLE) ||
-                  (tokenizer_token() == TOKENIZER_NUMBER)) {
+		} else if(tokenizer_token() == TOKENIZER_SEMICOLON) {
+			tokenizer_next();
+		} else if((tokenizer_token() == TOKENIZER_VARIABLE) || (tokenizer_token() == TOKENIZER_NUMBER)) {
 			//			send_msg(bcd(expr(), tempstring));
 		} else {
 			break;
 		}
-	} while ((tokenizer_token() != TOKENIZER_CR) && 
-            (tokenizer_token() != TOKENIZER_ENDOFINPUT));
+	} while (tokenizer_token() != TOKENIZER_CR) && 
+            (tokenizer_token() != TOKENIZER_ENDOFINPUT);
 	send_msg("\n");
 // DEBUG_PRINTF("End of print\n");
 	tokenizer_next();
 }
-
 /*---------------------------------------------------------------------------*/
 /* source format:
 if c<255  { \ 
@@ -262,7 +256,7 @@ static void if_statement(void)
 
         // more than one statement?
         while (tokenizer_token() != TOKENIZER_RIGHTBRACK) {
-        	statement();
+		statement();
         }
 
         // is there an 'else' clause
@@ -301,12 +295,12 @@ static void if_statement(void)
 
         // find the else
 		do{
-			tokenizer_next();
-		} while(tokenizer_token() != TOKENIZER_ELSE &&
-			   tokenizer_token() != TOKENIZER_CR &&
-			   tokenizer_token() != TOKENIZER_ENDOFINPUT);
-		if(tokenizer_token() == TOKENIZER_ELSE) {
-			tokenizer_next();
+		tokenizer_next();
+	}while(tokenizer_token() != TOKENIZER_ELSE &&
+			tokenizer_token() != TOKENIZER_CR &&
+			tokenizer_token() != TOKENIZER_ENDOFINPUT);
+	if(tokenizer_token() == TOKENIZER_ELSE) {
+		tokenizer_next();
             accept(TOKENIZER_LEFTBRACK);
             statement();
             // more than one statement?
@@ -315,14 +309,13 @@ static void if_statement(void)
             }
             accept(TOKENIZER_RIGHTBRACK);
             accept(TOKENIZER_CR);
-		} else if(tokenizer_token() == TOKENIZER_CR) {
-			tokenizer_next();
-		}
+	} else if(tokenizer_token() == TOKENIZER_CR) {
+		tokenizer_next();
 	}
 }
-
+}
 /*---------------------------------------------------------------------------*/
-/* static void let_statement(void) 
+static void let_statement(void) 
 {
 	int16_t var;
 
@@ -334,8 +327,36 @@ static void if_statement(void)
 	// DEBUG_PRINTF("let_statement: assign %d to %d\n", variables[var], var);
 	accept(TOKENIZER_CR);
 
-} */
+}
 /*---------------------------------------------------------------------------*/
+}
+
+/*---------------------------------------------------------------------------*/
+// syntax: poke addr, expr
+// added by brl4
+static void poke_statement(void)
+{
+    char *addr;
+    char val;
+    accept(TOKENIZER_POKE);
+    addr = expr();
+    accept(TOKENIZER_COMMA);
+    val = expr();
+    *addr = val;
+    accept(TOKENIZER_CR);
+}
+
+/*---------------------------------------------------------------------------*/
+// syntax: delay expr
+// added by brl4
+static void delay_statement(void)
+{
+    int val;
+    accept(TOKENIZER_DELAY);
+    val = expr();
+    _delay_ms(val);
+    accept(TOKENIZER_CR);
+}
 
 /*---------------------------------------------------------------------------*/
 /*static void
@@ -356,8 +377,8 @@ return_statement(void)
 // modified for {} delimited block -- BRL4
 static void for_statement(void) 
 {
-    int16_t for_variable, to, for_value;
-    char *for_ptr;       //char
+    int for_variable, to, for_value;
+    int *for_ptr;       //char
 
 	accept(TOKENIZER_FOR);
 	for_variable = tokenizer_variable_num();
@@ -377,12 +398,13 @@ static void for_statement(void)
         while (tokenizer_token() != TOKENIZER_RIGHTBRACK) {
             statement();
         }
+
         //variables[for_variable]++ ;
         for_value = ubasic_get_variable(for_variable);
         ubasic_set_variable(for_variable, ++for_value);
-        if (variables[for_variable] <= to) {
+
+        if (variables[for_variable] <= to)
             tokenizer_ptr_set(for_ptr);
-        }
     }
     tokenizer_next();
     accept(TOKENIZER_CR);
@@ -392,8 +414,8 @@ static void for_statement(void)
 // modified for {} delimited block -- BRL4
 static void while_statement(void)
 {
-    int16_t while_expr;
-    char *while_ptr, *end_ptr;
+    int while_expr;
+    int *while_ptr, end_ptr;
     char finished = 0, bracket_depth = 0;
 
     accept(TOKENIZER_WHILE);
@@ -411,7 +433,8 @@ static void while_statement(void)
             bracket_depth--;
         if (tokenizer_token() == TOKENIZER_LEFTBRACK)
             bracket_depth++;
-    } while (tokenizer_token() != TOKENIZER_RIGHTBRACK || bracket_depth > 0);
+    } while (tokenizer_token() != TOKENIZER_RIGHTBRACK ||
+             bracket_depth > 0);
     end_ptr = tokenizer_ptr();
 
     // are we finished yet?
@@ -452,6 +475,7 @@ static void rem_statement(void)
     while (tokenizer_token() != TOKENIZER_CR) {
         tokenizer_next();
     }
+
     tokenizer_next();
 }
 
@@ -461,7 +485,6 @@ static void end_statement(void)
 	accept(TOKENIZER_END);
 	ended = 1;
 }
-
 /*---------------------------------------------------------------------------*/
 static void wait_statement(void) 
 {
@@ -547,7 +570,6 @@ uint8_t led_value;
 	accept(TOKENIZER_NUMBER);
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 enum SWITCHES {SW_A=16, SW_B, SW_C, SW_D};
 
@@ -574,7 +596,6 @@ uint8_t  channel, value, var;
 	ubasic_set_variable(var, value);
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 // motors_statement : switch motors on and off
 // ================
@@ -613,7 +634,6 @@ int16_t  temp;
 
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 // speed statement : set speed for left and right motors 
 //
@@ -633,7 +653,6 @@ static void speed_statement(void)
 
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 // read_statement : read a system value (e.g. clock, wheel counts, etc)
 // ==============
@@ -655,15 +674,14 @@ static void read_statement(void)
 	accept(TOKENIZER_CR);
 	
 	switch (item) {
-		case NOW_TIME :
-			value = tick_count_16;
-			break;
-		default :
-			break;
+	case NOW_TIME :
+		value = tick_count_16;
+		break;
+	default :
+		break;
 	}
 	ubasic_set_variable(variable_num, value);
 }
-
 /*---------------------------------------------------------------------------*/
 // text_statement : output string to 2 character 7-seg display
 // ==============
@@ -680,7 +698,6 @@ static void text_statement(void)
 	} while((tokenizer_token() != TOKENIZER_CR) && (tokenizer_token() != TOKENIZER_ENDOFINPUT));
 	tokenizer_next();
 }
-
 /*---------------------------------------------------------------------------*/
 // tone_statement : sound note for a set duration of 0.1sec
 // ==============
@@ -696,7 +713,6 @@ static void tone_statement(void)
 	set_tone(note, duration);
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 // move_statement : do a robot distance move
 // ==============
@@ -735,14 +751,12 @@ static void move_statement(void)
                
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 static void turn_statement(void) 
 {
 	accept(TOKENIZER_TURN);
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 static void cal_statement(void) 
 {
@@ -750,7 +764,6 @@ static void cal_statement(void)
 	calibrate();
 	accept(TOKENIZER_CR);
 }
-
 /*---------------------------------------------------------------------------*/
 static void statement(void) 
 {
@@ -759,9 +772,9 @@ static void statement(void)
 	token = tokenizer_token();
 
 	switch (token) {
-//    case TOKENIZER_VARIABLE:
-//        let_statement();
-//        break;
+    case TOKENIZER_VARIABLE:
+        let_statement();
+        break;
 	case TOKENIZER_PRINT:
 		print_statement();
 		break;
@@ -810,15 +823,15 @@ static void statement(void)
 	case TOKENIZER_CAL:
 		cal_statement();
 		break;
-//	case TOKENIZER_VARIABLE:
-//		let_statement();
-//		break;
+	case TOKENIZER_VARIABLE:
+		let_statement();
+		break;
     case TOKENIZER_REM:
         rem_statement();
         break;
 	default:
 		// DEBUG_PRINTF("ubasic.c: statement(): not implemented %d\n", token);
-		break;
+		exit(1);
 	}
 }
 

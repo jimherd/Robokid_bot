@@ -13,15 +13,10 @@
 //----------------------------------------------------------------------------
 
 #pragma INTO_ROM
-const char script_example[] =
-"10 gosub 100\n\
-20 for i = 1 to 11\n\
-30 print i\n\
-40 next i\n\
-50 print \"end\"\n\
-60 end\n\
-100 print \"subroutine\"\n\
-110 return\n";
+char script_example[] =
+"# comment\n\
+leds 1 0 0 0\n\
+end\n";
 
 #pragma INTO_ROM
 const char script1[] =

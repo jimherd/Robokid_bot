@@ -66,7 +66,7 @@ void cmd_push_H8(uint8_t value);
 void cmd_push_16(uint16_t value);
 uint8_t cmd_pop_8(void);
 uint16_t cmd_pop_16(void);
-void run_sequence(uint16_t  sequence[]);
+void run_sequence(const uint16_t  sequence[]);
 void store_instruction(uint16_t sequence[], 
                           uint8_t inst_ptr, 
                           instruction_t inst, 

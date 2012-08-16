@@ -39,12 +39,15 @@ enum {
   TOKENIZER_LET,
   TOKENIZER_PRINT,
   TOKENIZER_IF,
-
+  TOKENIZER_THEN,
   TOKENIZER_ELSE,
   TOKENIZER_FOR,
   TOKENIZER_TO,
+  TOKENIZER_NEXT,
+  TOKENIZER_GOTO,
+  TOKENIZER_GOSUB,
   TOKENIZER_RETURN,
-
+  TOKENIZER_CALL,
   TOKENIZER_END,
   TOKENIZER_WAIT,
   TOKENIZER_LEDS,
@@ -68,17 +71,13 @@ enum {
   TOKENIZER_MOD,
   TOKENIZER_LEFTPAREN,
   TOKENIZER_RIGHTPAREN,
-  TOKENIZER_LEFTBRACK, // Bruce land
-  TOKENIZER_RIGHTBRACK, // Bruce land 30
   TOKENIZER_LT,
   TOKENIZER_GT,
   TOKENIZER_EQ,
   TOKENIZER_CR,
-  TOKENIZER_WHILE, // Bruce land
-  TOKENIZER_REM, // Bruce land
 };
 
-void tokenizer_init(char *program);
+void tokenizer_init(const char *program);
 void tokenizer_next(void);
 uint8_t tokenizer_token(void);
 uint8_t tokenizer_num(void);
@@ -87,9 +86,5 @@ void tokenizer_string(char *dest, uint8_t len);
 
 uint8_t tokenizer_finished(void);
 void tokenizer_error_print(void);
-char*  tokenizer_ptr(void);
-void tokenizer_ptr_set(char *p);
-
-// static char const *ptr, *nextptr;
 
 #endif /* __TOKENIZER_H__ */

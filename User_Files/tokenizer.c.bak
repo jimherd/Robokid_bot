@@ -40,9 +40,9 @@
 //#define // DEBUG_PRINTF(...)   
 //#endif
 
-char *ptr, *nextptr;
+static char const *ptr, *nextptr;
 
-#define MAX_NUMLEN 6
+#define MAX_NUMLEN 5
 
 struct keyword_token {
   char 		*keyword;
@@ -52,28 +52,39 @@ struct keyword_token {
 static uint8_t current_token = TOKENIZER_ERROR;
 
 static const struct keyword_token keywords[] = {
+  {"let", TOKENIZER_LET},
   {"print", TOKENIZER_PRINT},
   {"if", TOKENIZER_IF},
+  {"then", TOKENIZER_THEN},
   {"else", TOKENIZER_ELSE},
   {"for", TOKENIZER_FOR},
   {"to", TOKENIZER_TO},
+  {"next", TOKENIZER_NEXT},
+  {"goto", TOKENIZER_GOTO},
+  {"gosub", TOKENIZER_GOSUB},
   {"return", TOKENIZER_RETURN},
+  {"call", TOKENIZER_CALL},
   {"end", TOKENIZER_END},
   {"wait", TOKENIZER_WAIT},
   {"leds", TOKENIZER_LEDS},
   {"motors", TOKENIZER_MOTORS},
-  {"while", TOKENIZER_WHILE}, //brl4
-  {"#", TOKENIZER_REM},       //brl4
+  {"speed", TOKENIZER_SPEED},
+  {"sense", TOKENIZER_SENSE},
+  {"read", TOKENIZER_READ},
+  {"text", TOKENIZER_TEXT},
+  {"tone", TOKENIZER_TONE},
   {NULL, TOKENIZER_ERROR}
 };
 
 /*---------------------------------------------------------------------------*/
 static uint8_t singlechar(void) 
 {
-    if (*ptr == ';') {  //(*ptr == '\n')
+	if (*ptr == '\n') {
 		return TOKENIZER_CR;
 	} else if (*ptr == ',') {
 		return TOKENIZER_COMMA;
+	} else if (*ptr == ';') {
+		return TOKENIZER_SEMICOLON;
 	} else if (*ptr == '+') {
 		return TOKENIZER_PLUS;
 	} else if (*ptr == '-') {
@@ -92,10 +103,6 @@ static uint8_t singlechar(void)
 		return TOKENIZER_LEFTPAREN;
 	} else if (*ptr == ')') {
 		return TOKENIZER_RIGHTPAREN;
-    } else if (*ptr == '{') {
-        return TOKENIZER_LEFTBRACK;
-    } else if (*ptr == '}') {
-        return TOKENIZER_RIGHTBRACK;
 	} else if (*ptr == '<') {
 		return TOKENIZER_LT;
 	} else if (*ptr == '>') {
@@ -138,11 +145,11 @@ static uint8_t get_next_token(void)
 	} else if (singlechar()) {
 		nextptr = ptr + 1;
 		return singlechar();
-    } else if (*ptr == '\'') {
+	} else if (*ptr == '"') {
 		nextptr = ptr;
 		do {
 			++nextptr;
-        } while (*nextptr != '\'');
+		} while(*nextptr != '"');
 		++nextptr;
 		return TOKENIZER_STRING;
 	} else {
@@ -160,13 +167,10 @@ static uint8_t get_next_token(void)
 	return TOKENIZER_ERROR;
 }
 /*---------------------------------------------------------------------------*/
-// CHANGED -- BRL4 -- failed if first char was not a token
-void tokenizer_init(char *program) 
+void tokenizer_init(const char *program) 
 {
 	ptr = program;
-    nextptr = program;
-    tokenizer_next();
-    //current_token =  get_next_token();
+	current_token = get_next_token();
 }
 /*---------------------------------------------------------------------------*/
 uint8_t tokenizer_token(void) 
@@ -182,8 +186,7 @@ void tokenizer_next(void)
 	}
 	// DEBUG_PRINTF("tokenizer_next: %p\n", nextptr);
 	ptr = nextptr;
-    // CHANGED brl4 -- ignore tabs, newlines
-    while (*ptr == ' ' | *ptr == '\t' | *ptr == '\n' | *ptr == '\r') {
+	while (*ptr == ' ') {
 		++ptr;
 	}
 	current_token = get_next_token();
@@ -204,7 +207,7 @@ void tokenizer_string(char *dest, uint8_t len)
 	if (tokenizer_token() != TOKENIZER_STRING) {
 		return;
 	}
-    string_end = strchr(ptr + 1, '\'');
+	string_end = strchr(ptr + 1, '"');
 	if (string_end == NULL) {
 		return;
 	}
@@ -230,20 +233,4 @@ uint8_t tokenizer_variable_num(void)
 {
 	return *ptr - 'a';
 }
-
-/*---------------------------------------------------------------------------*/
-/*---------------------------------------------------------------------------*/
-char* tokenizer_ptr(void)
-{
-    return ptr;
-}
-
-/*---------------------------------------------------------------------------*/
-/*---------------------------------------------------------------------------*/
-void tokenizer_ptr_set(char *p)
-{
-    ptr = p;
-    current_token = get_next_token();
-}
-
 /*---------------------------------------------------------------------------*/
