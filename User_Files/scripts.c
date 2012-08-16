@@ -13,13 +13,13 @@
 //----------------------------------------------------------------------------
 
 #pragma INTO_ROM
-char script_example[] =
-"# comment\n\
-leds 1 0 0 0\n\
-end\n";
+char script1[] =
+"# comment ;\n\
+leds 1 0 1 0 ;\n\
+end;\n";
 
 #pragma INTO_ROM
-const char script1[] =
+const char script0[] =
 "1 text \"Script1\"\n\
 6 let h = 50\n\
 7 speed h h\n\

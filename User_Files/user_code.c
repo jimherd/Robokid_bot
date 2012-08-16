@@ -514,8 +514,8 @@ uint16_t  ticks;
 // **
 // ** temp call to test a script
 //
-//    experiment_10();
-//    HANG;
+    experiment_10();
+    HANG;
 //
 // print battery voltage value
 //
