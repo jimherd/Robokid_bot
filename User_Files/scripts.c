@@ -15,7 +15,12 @@
 #pragma INTO_ROM
 char script1[] =
 "# comment ;\n\
-leds 1 0 1 0 ;\n\
+for a=1 to 10 {\n\
+	leds 1 0 1 0 ;\n\
+	wait 10;\n\
+	leds 0 1 0 1 ;\n\
+	wait 10;\n\
+}\n\
 end;\n";
 
 #pragma INTO_ROM

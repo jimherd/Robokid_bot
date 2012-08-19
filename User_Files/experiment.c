@@ -451,7 +451,7 @@ uint8_t   i, j;
 //
 uint8_t experiment_10(void) {
 
-	ubasic_init(script1);
+	ubasic_init(&script1[0]);
 	do{
 		ubasic_run();
 	} while(!ubasic_finished());

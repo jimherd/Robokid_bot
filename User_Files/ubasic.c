@@ -36,8 +36,6 @@
 
 //#define DEBUG 0
 
-//#define DEBUG 0
-
 //#if DEBUG
 //#define  DEBUG_PRINTF(...)  sprintf(__VA_ARGS__)
 //#else
@@ -69,6 +67,7 @@ void ubasic_init(char *program)
 	tokenizer_init(program);
 	ended = 0;
 }
+
 /*---------------------------------------------------------------------------*/
 static void accept(uint8_t token) 
 {
@@ -81,6 +80,7 @@ static void accept(uint8_t token)
 	// DEBUG_PRINTF("Expected %d, got it\n", token);
 	tokenizer_next();
 }
+
 /*---------------------------------------------------------------------------*/
 static int16_t varfactor(void) 
 {
@@ -90,6 +90,7 @@ static int16_t varfactor(void)
 	accept(TOKENIZER_VARIABLE);
 	return r;
 }
+
 /*---------------------------------------------------------------------------*/
 static int16_t factor(void) 
 {
@@ -113,6 +114,7 @@ static int16_t factor(void)
 	}
 	return r;
 }
+
 /*---------------------------------------------------------------------------*/
 static int16_t term(void) 
 {
@@ -143,6 +145,7 @@ static int16_t term(void)
 	// DEBUG_PRINTF("term: %d\n", f1);
 	return f1;
 }
+
 /*---------------------------------------------------------------------------*/
 static int16_t expr(void) 
 {
@@ -370,14 +373,13 @@ static void for_statement(void)
     // record the next token search location
     for_ptr = tokenizer_ptr();
     while (variables[for_variable] <= to) {
-
         tokenizer_next();
         statement();
         // more than one statement?
         while (tokenizer_token() != TOKENIZER_RIGHTBRACK) {
             statement();
         }
-        //variables[for_variable]++ ;
+        variables[for_variable]++ ;
         for_value = ubasic_get_variable(for_variable);
         ubasic_set_variable(for_variable, ++for_value);
         if (variables[for_variable] <= to) {

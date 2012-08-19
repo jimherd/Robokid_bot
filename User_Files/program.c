@@ -27,7 +27,7 @@
 //
 uint8_t run_program_mode(void) {
 
-uint8_t           activity;
+uint8_t		activity;
 
     P_MODE_LEDS;
     activity = FIRST_PROGRAM_MODE;
@@ -61,7 +61,7 @@ uint8_t           activity;
             continue;
         }
 //
-// run a joystick activity
+// run one of the programming activities
 // 
         show_dual_chars('P', ('0'+ activity), 0);
         push_LED_display();       
@@ -1333,12 +1333,11 @@ uint8_t    i;
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-// run_program_mode_4 : program vehicle using line following optical sensors
+// run_program_mode_4 : download and run ubasic+ programs
 // ==================
 //
 // Description
-//      User creates a black and white linear strip pattern which is read into
-//      the robot by scanning with the front line optical sensors.
+//      
 //
 // Notes
 //
@@ -1375,8 +1374,7 @@ sequence_mode_t   seq_mode;
 // No POT input at this time
 //
         if (switch_B == PRESSED) {
-            SOUND_READ_POTS;
-            
+            SOUND_READ_POTS; 
         }
 //
 //  check for exit
@@ -1450,11 +1448,12 @@ sequence_mode_t   seq_mode;
 }
 
 //----------------------------------------------------------------------------
-// get_basic_program : 
+// get_basic_program : read a program from the serial port
 // =================
 //
 // Description
-//      ........
+//		Download a ubasic+ program as a stream of ASCII characters. Terminated by a NULL
+//		character.
 //
 // Notes
 //

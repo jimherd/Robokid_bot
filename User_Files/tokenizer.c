@@ -59,11 +59,11 @@ static const struct keyword_token keywords[] = {
   {"to", TOKENIZER_TO},
   {"return", TOKENIZER_RETURN},
   {"end", TOKENIZER_END},
-  {"wait", TOKENIZER_WAIT},
-  {"leds", TOKENIZER_LEDS},
-  {"motors", TOKENIZER_MOTORS},
-  {"while", TOKENIZER_WHILE}, //brl4
-  {"#", TOKENIZER_REM},       //brl4
+  {"wait", TOKENIZER_WAIT},		// jth
+  {"leds", TOKENIZER_LEDS},		// jth
+  {"motors", TOKENIZER_MOTORS},	// jth
+  {"while", TOKENIZER_WHILE}, 	// brl4
+  {"#", TOKENIZER_REM},       	// brl4
   {NULL, TOKENIZER_ERROR}
 };
 
@@ -195,6 +195,7 @@ uint8_t tokenizer_num(void)
 {
 	return atoi(ptr);
 }
+
 /*---------------------------------------------------------------------------*/
 void tokenizer_string(char *dest, uint8_t len) 
 {
@@ -215,16 +216,19 @@ void tokenizer_string(char *dest, uint8_t len)
 	memcpy(dest, ptr + 1, string_len);
 	dest[string_len] = 0;
 }
+
 /*---------------------------------------------------------------------------*/
 void tokenizer_error_print(void) 
 {
 	// DEBUG_PRINTF("tokenizer_error_print: '%s'\n", ptr);
 }
+
 /*---------------------------------------------------------------------------*/
 uint8_t tokenizer_finished(void) 
 {
 	return *ptr == 0 || current_token == TOKENIZER_ENDOFINPUT;
 }
+
 /*---------------------------------------------------------------------------*/
 uint8_t tokenizer_variable_num(void) 
 {
