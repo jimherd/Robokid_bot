@@ -155,9 +155,9 @@ static int16_t expr(void)
 	t1 = term();
 	op = tokenizer_token();
     // DEBUG_PRINTF("expr: token %d\n", op);
-    while (op == TOKENIZER_PLUS ||
+    while (op == TOKENIZER_PLUS  ||
            op == TOKENIZER_MINUS ||
-           op == TOKENIZER_AND || op == TOKENIZER_OR) {
+           op == TOKENIZER_AND   || op == TOKENIZER_OR) {
 		tokenizer_next();
 		t2 = term();
 		// DEBUG_PRINTF("expr: %d %d %d\n", t1, op, t2);
@@ -325,7 +325,7 @@ static void if_statement(void)
 }
 
 /*---------------------------------------------------------------------------*/
-/* static void let_statement(void) 
+static void let_statement(void) 
 {
 	int16_t var;
 
@@ -337,7 +337,7 @@ static void if_statement(void)
 	// DEBUG_PRINTF("let_statement: assign %d to %d\n", variables[var], var);
 	accept(TOKENIZER_CR);
 
-} */
+}
 /*---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------*/
@@ -413,7 +413,7 @@ static void while_statement(void)
             bracket_depth--;
         if (tokenizer_token() == TOKENIZER_LEFTBRACK)
             bracket_depth++;
-    } while (tokenizer_token() != TOKENIZER_RIGHTBRACK || bracket_depth > 0);
+    } while ((tokenizer_token() != TOKENIZER_RIGHTBRACK) || (bracket_depth > 0));
     end_ptr = tokenizer_ptr();
 
     // are we finished yet?
@@ -761,9 +761,9 @@ static void statement(void)
 	token = tokenizer_token();
 
 	switch (token) {
-//    case TOKENIZER_VARIABLE:
-//        let_statement();
-//        break;
+    case TOKENIZER_VARIABLE:
+        let_statement();
+        break;
 	case TOKENIZER_PRINT:
 		print_statement();
 		break;

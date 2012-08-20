@@ -53,18 +53,22 @@ static uint8_t current_token = TOKENIZER_ERROR;
 
 static const struct keyword_token keywords[] = {
   {"print", TOKENIZER_PRINT},
-  {"if", TOKENIZER_IF},
-  {"else", TOKENIZER_ELSE},
-  {"for", TOKENIZER_FOR},
-  {"to", TOKENIZER_TO},
-  {"return", TOKENIZER_RETURN},
-  {"end", TOKENIZER_END},
-  {"wait", TOKENIZER_WAIT},		// jth
-  {"leds", TOKENIZER_LEDS},		// jth
-  {"motors", TOKENIZER_MOTORS},	// jth
+  {"if", 	TOKENIZER_IF},
+  {"else", 	TOKENIZER_ELSE},
+  {"for", 	TOKENIZER_FOR},
+  {"to", 	TOKENIZER_TO},
+  {"return",TOKENIZER_RETURN},
+  {"end", 	TOKENIZER_END},
+  
+  {"wait", 	TOKENIZER_WAIT},	// jth
+  {"leds", 	TOKENIZER_LEDS},	// jth
+  {"motors",TOKENIZER_MOTORS},	// jth
+  {"speed", TOKENIZER_SPEED},	// jth
+  {"text",	TOKENIZER_TEXT},	// jth
+  
   {"while", TOKENIZER_WHILE}, 	// brl4
-  {"#", TOKENIZER_REM},       	// brl4
-  {NULL, TOKENIZER_ERROR}
+  {"#", 	TOKENIZER_REM},     // brl4
+  {NULL, 	TOKENIZER_ERROR}
 };
 
 /*---------------------------------------------------------------------------*/
