@@ -561,7 +561,6 @@ uint16_t  ticks;
     last_mode = LAST_SYS_MODE - 1;     // hide experiment mode 
 
     mode = 0;
- 
 //
 // check for GO or mode increment button
 //        
@@ -609,7 +608,6 @@ uint16_t  ticks;
 //
 //  check for mode change button
 //
-        
         if (switch_D == PRESSED) {
             CLR_TIMER16;                        // clear 16-bit 8mS tick counter
             mode++; 

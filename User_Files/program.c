@@ -223,7 +223,7 @@ uint8_t    i;
 //
 //      F (Forward), b (backward), L (spin Left), r (spin right)
 //
-//      The F and b commands have a single paramter that specifies the distance
+//      The F and b commands have a single parameter that specifies the distance
 //      to be moved in units of 1cm. Range is 0 to 99cm.
 //      The L and r commands have a single parameter that is either 0, 45 or 90 
 //      degrees.
@@ -1096,8 +1096,7 @@ sequence_mode_t   seq_mode;
 // No POT input at this time
 //
         if (switch_B == PRESSED) {
-            SOUND_READ_POTS;
-            
+            SOUND_READ_POTS; 
         }
 //
 //  check for exit
@@ -1337,7 +1336,11 @@ uint8_t    i;
 // ==================
 //
 // Description
-//      
+//      ubasic is a simple integer only small basic interpreter written by Adam Dunkels.
+//      In turn this was modified to remove line numbers and incorporate some block
+//      structures - while, for, {}.
+//		This has been incorpoated into the Robokid robot with some additional commands
+//		that allow access to the hardware features of the robot.
 //
 // Notes
 //
@@ -1419,7 +1422,7 @@ sequence_mode_t   seq_mode;
             }
         } 
 //
-// run an experiment
+// run one of the 5 program modes
 // 
         show_dual_chars('S', ('0'+ seq_mode), 0);
         push_LED_display();       
@@ -1428,7 +1431,7 @@ sequence_mode_t   seq_mode;
                 play_sequence();
                 break;            
             case COLLECT :
-                get_basic_program();
+                get_ubasicp_program();
                 break;
             case SAVE :
                 break;
@@ -1448,8 +1451,8 @@ sequence_mode_t   seq_mode;
 }
 
 //----------------------------------------------------------------------------
-// get_basic_program : read a program from the serial port
-// =================
+// get_ubasicp_program : read a program from the serial port
+// ===================
 //
 // Description
 //		Download a ubasic+ program as a stream of ASCII characters. Terminated by a NULL
@@ -1458,11 +1461,12 @@ sequence_mode_t   seq_mode;
 // Notes
 //
 //      Active switches are 
-//          switch D = start/stop scan process
+//          switch D = start program read process
 //   
-uint8_t get_basic_program(void) {
+uint8_t get_ubasicp_program(void) {
 
-uint8_t   line_L, line_R, current_L, current_R, time, cmd_pt, current_cmd, new_cmd, time_samples;
+uint8_t   string_ptr;
+int8_t    style;
 
     clr_all_LEDs();
     set_LED(LED_D, FLASH_ON);
@@ -1474,72 +1478,160 @@ uint8_t   line_L, line_R, current_L, current_R, time, cmd_pt, current_cmd, new_c
     set_LED(LED_D, FLASH_OFF);
     play_tune(&snd_beeps_1);
 //
-// initialise time count and line sensor values
+// initialise ubasic+ storage area by putting null terminator in location 0
+// set pointer to start of buffer and set time-out counter
+// Note : 'string_ptr' will point to next free space in 512 character buffer
 //    
     shared.ubasic_program_space[0] = '\0';
+    string_ptr = 0;
+    CLR_TIMER16;                        // clear 16-bit 8mS tick counter
 //
-//  initialise data for first command
+//  Read lines of characters from the serial port
 //
-    cmd_pt = 0;
-    time = 1; 
-    current_cmd = ((current_L << 1) & 0x02) + current_R;  
-//
-// scan sensors at 0.1 sec intervals for a maximum of 20 seconds  
-//  
-    for (time_samples=0 ; time_samples < 200 ; time_samples++) {
-//
-// read line sensors.   1=WHITE, 0=BLACK
-//
-        line_L = READ_TAPE_SENSOR(LINE_SENSOR_L);
-        if (line_L == BLACK) {
-            set_LED(LED_B, FLASH_OFF);
-        } else {
-            clr_LED(LED_B);
-        }
-        line_R = READ_TAPE_SENSOR(LINE_SENSOR_R); 
-        if (line_R == BLACK) {
-            set_LED(LED_A, FLASH_OFF);
-        } else {
-            clr_LED(LED_A);
-        }        
-        new_cmd = (line_L << 1) + line_R;
-        if (new_cmd != current_cmd) {
-        	shared.seq.strip_data[cmd_pt][0] = current_cmd;
-        	shared.seq.strip_data[cmd_pt][1] = time;
-            if (new_cmd == STRIP_CMD_STOP) {   // exit scan process
-                cmd_pt++;                        
-                shared.seq.strip_data[cmd_pt][0] = STRIP_CMD_STOP;
-                shared.seq.strip_data[cmd_pt][1] = 0;
-                stop_tune();
-                return  cmd_pt;
-            }
-            time = 1;
-            current_cmd = new_cmd;
-            cmd_pt++;
-            if (cmd_pt > MAX_STRIP_CMDS) {
-                cmd_pt--;
-            }
-        } else {
-            time++;
-        }
-        if (switch_D == PRESSED) {       //  exit when switch D is pressed           
-            set_LED(LED_A, FLASH_OFF); 
-            set_LED(LED_D, FLASH_ON);
-            WAIT_SWITCH_RELEASED(switch_D);
-            stop_tune();
-            return  cmd_pt; 
-        }
-        DelayMs(100);    // sample time is 0.1 second       
+    FOREVER {
+    	read_line(tempstring);
+    	style = trim_line(tempstring);
+    	if (tempstring[0] == '@') {			// @ = end of program transfer
+    		break;
+    	}
+    	if (style == LINE_BLANK) {          // don't store blank lines
+    		continue;
+    	}
+    	if (style == LINE_NO_TERM) {
+    		break;
+    	}
+    	string_ptr = store_line(string_ptr, tempstring);
     }
-    shared.seq.strip_data[cmd_pt][0] = current_cmd;
-    shared.seq.strip_data[cmd_pt][1] = time;
-    cmd_pt++;
-    if (cmd_pt > MAX_STRIP_CMDS) {
-        cmd_pt--;
-    }
-    shared.seq.strip_data[cmd_pt][0] = STRIP_CMD_STOP;      // termination command
-    shared.seq.strip_data[cmd_pt][1] = 0;
-    tone_off();
-    sys_error = TIME_OUT;
-    return cmd_pt;
+	tempstring[string_ptr] = '\0';		// ensure there is a null terminator
+//
+// Store buffer in FLASH
+//
+    return 0;
+}
+
+//----------------------------------------------------------------------------
+// trim_line : remove any unnecessary characters from a ubasic+ line of code
+// =========
+//
+// Description
+//		In order to save same in the limited ubasic+ 512 character storage buffer
+//		this routine strips out any redundant spaces and indicated any lines that
+//		need not be stores e.g. comment lines and lines with no characters.
+//
+// Notes
+//   
+int8_t trim_line(char line[]) {
+	
+uint8_t		  start_ptr, end_ptr, in_ptr, out_ptr, i;
+line_scan_t	  scan_state;
+//
+// 1. Initialise start and end buffer pointers
+//
+	start_ptr = 0;
+	end_ptr = 0;
+	for (i=0 ; i < TEMP_STRING_SIZE ; i++) {
+		if (line[i] != '\n') {
+			end_ptr++;
+		} else {
+			break;
+		}
+	}
+	if (end_ptr == 0) {
+		return LINE_NO_TERM;
+	}
+//
+// 2. convert all tab characters to space characters
+//
+	for (i=0 ; i < TEMP_STRING_SIZE ; i++) {
+		if (line[i] == '\t') {
+			line[i] = ' ';
+		}
+	}
+//
+// 3. run MEALY state machine to remove additional spaces (see project notes)
+//
+	scan_state = L_START;
+	in_ptr = 0;
+	out_ptr = 0;
+	FOREVER {
+		if (in_ptr >= (TEMP_STRING_SIZE - 1)) {
+			break;		// check to ensure that scan does not overrun end of buffer
+		}
+		switch (scan_state) {
+		case L_START :
+			if (line[in_ptr] == ' ') {
+				in_ptr++;
+			} else if (line[in_ptr] == '\n') {
+				line[out_ptr++] = line[in_ptr];
+				return LINE_BLANK;
+			} else {
+				scan_state = L_SCAN;
+			}
+			break;
+		case L_SCAN:
+			if (line[in_ptr] == '#') {
+				line[out_ptr] = '\n';
+				if (out_ptr == 0) {
+					return LINE_BLANK;
+				} else {
+					return LINE_USEFUL;
+				}
+			} else if (line[in_ptr] == '\'') {
+					line[out_ptr++] = line[in_ptr++];
+					scan_state = L_COPY_STRING;
+			} else if (line[in_ptr] == ' ') {
+					line[out_ptr++] = line[in_ptr++];
+					scan_state = L_SKIP_SPACES;
+			} else if (line[in_ptr] == '\n') {
+					line[out_ptr] = line[in_ptr];
+					if (out_ptr == 0) {
+						return LINE_BLANK;
+					} else {
+						return LINE_USEFUL;
+					}
+			} else {
+				line[out_ptr++] = line[in_ptr++];
+			}
+			break;
+		case L_COPY_STRING:
+			if (line[in_ptr] == '\'') {
+				scan_state = L_SCAN;
+			}
+			line[out_ptr++] = line[in_ptr++];
+			break;
+		case L_SKIP_SPACES:
+			if (line[in_ptr] == ' ') {
+				in_ptr++;
+			} else {
+				line[out_ptr++] = line[in_ptr++];
+				scan_state = L_SCAN;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	return LINE_USEFUL;
+}
+
+//----------------------------------------------------------------------------
+// store_line : copy line of ubasic+ code to the program buffer
+// ==========
+//
+// Description
+//		
+//
+// Notes
+//   
+uint8_t store_line(uint8_t buffer_ptr, char string[]) {
+
+uint8_t		ptr;
+char		ch;
+
+	ptr=0;
+	do {
+		ch = string[ptr++];
+		tempstring[buffer_ptr++] = ch;
+	} while (ch != '\n');
+	return buffer_ptr;
 }

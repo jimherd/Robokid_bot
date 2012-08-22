@@ -126,25 +126,31 @@ void * bcd(char byte, char number_str[])
 }
 
 //----------------------------------------------------------------------------
-// read_string : read an ASCII string from the serial input via the USB channel
-// ===========
+// read_line : read an ASCII string from the serial input via the USB channel
+// =========
 //
 // Description
 //		Read an ASCII string via the USB virtual COM port.  String will be terminated
-//		with a carriage return character and be less that 32 characters in length.
+//		with a newline character and be less that MAX_LINE_SIZE characters in length.
+//		Error check to detect lines that would overflow the buffer.
 //
 // Notes
 //
-uint8_t read_string(char string[])
+uint8_t read_line(char string[])
 {
 	uint8_t   i;
 	
-	for(i=0 ; i < 32 ; i++){
+	for(i=0 ; i < TEMP_STRING_SIZE ; i++){
 		if ((string[i] = sci_rx_byte()) == '\n') {
 			string[i+1] = '\0';
 			return i;
 		}
 	}
+//
+// To here if line is too long. Insert NULL at end of buffer and return maximum size
+// 
+	string[TEMP_STRING_SIZE-1] = '\0';
+	return TEMP_STRING_SIZE;
 }
 
 

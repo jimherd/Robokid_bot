@@ -15,22 +15,24 @@
 #pragma INTO_ROM
 char script1[] =
 "# comment ;\n\
-for a=1 to 3{\n\
+for a=1 to 2{\n\
 	leds 1 0 1 0;\n\
 	wait 10;\n\
 	leds 0 1 0 1;\n\
 	wait 10;\n\
 };\n\
 leds 0 0 0 0;\n\
-b = 50;\n\
+b=0;\n\
 speed b b;\n\
 motors 1 1;\n\
-wait 50;\n\
+while b < 101 {\n\
+	wait 20;\n\
+	b=b+10;\n\
+	speed b b;\n\
+	motors 1 1;\n\
+};\n\
 motors 0 0;\n\
-motors 2 2;\n\
-wait 50;\n\
-motors 0 0;\n\
-text \'end\';\n\
+text \'end \';\n\
 end;\n";
 
 #pragma INTO_ROM

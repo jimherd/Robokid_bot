@@ -180,8 +180,6 @@
 #define   STOP_SPEED                   30
 #define   SENSE_LOW                    10
 
-#define   TEMP_STRING_SIZE             30
-
 #define   WHEEL_SENSOR_CALIBRATE_SPEED     35
 #define   NOS_WHEEL_SENSOR_CALIBRATE_READINGS          250
 #define   V_MAX_VALUE    255
@@ -391,5 +389,17 @@ typedef enum
 
 
 #define   RAM_SEQUENCE_SIZE    100
+
+//----------------------------------------------------------------------------
+// line buffer information
+//
+#define		TEMP_STRING_SIZE	48
+#define		LINE_USEFUL			 0
+#define		LINE_BLANK			-1
+#define		LINE_NO_TERM		-2
+
+typedef enum {
+	L_START, L_SCAN, L_COPY_STRING, L_SKIP_SPACES
+} line_scan_t;
 
 #endif

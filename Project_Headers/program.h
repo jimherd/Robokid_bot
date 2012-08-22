@@ -22,7 +22,9 @@ uint8_t input_distance_sequence(void);
 void save_sequence(uint8_t flash_seq_no);
 void load_sequence(uint8_t flash_seq_no);
 void dump_sequence(void);
-uint8_t get_basic_program(void);
+uint8_t get_ubasicp_program(void);
+int8_t trim_line(char line[]);
+uint8_t store_line(uint8_t string_ptr, char string[]);
 
 
 #endif /* __program_H */

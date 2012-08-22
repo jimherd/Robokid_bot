@@ -29,8 +29,10 @@ uint8_t          left_motor_tweak, right_motor_tweak;
 
 
 seven_seg_display_t   display_buff;
-
-char             tempstring[TEMP_STRING_SIZE];
+//
+// general purpose character string
+//
+char   tempstring[TEMP_STRING_SIZE];
 //
 // In RAM copy FLASH data
 //
@@ -204,8 +206,8 @@ struct  {
 // if the individual structures are accessed in a mutually exclusive manner.
 //
 union {
-	// storage for ubasic program
-	char			ubasic_program_space[1024]; 
+	// storage for ubasic+ program
+	char			ubasicp_program_space[1024]; 
 	
 	// storage for data read from strip programming
 	union {
