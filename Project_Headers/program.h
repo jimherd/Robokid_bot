@@ -25,6 +25,7 @@ void dump_sequence(void);
 uint8_t get_ubasicp_program(void);
 int8_t trim_line(char line[]);
 uint8_t store_line(uint8_t string_ptr, char string[]);
+void save_ubasicp_program(uint8_t flash_seq_no);
 
 
 #endif /* __program_H */

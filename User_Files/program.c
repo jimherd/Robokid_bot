@@ -1504,8 +1504,10 @@ int8_t    style;
     }
 	tempstring[string_ptr] = '\0';		// ensure there is a null terminator
 //
-// Store buffer in FLASH
+// Store buffer in FLASH (dumps entire 512 bytes)
 //
+	save_ubasicp_program(0);
+	
     return 0;
 }
 
@@ -1634,4 +1636,26 @@ char		ch;
 		tempstring[buffer_ptr++] = ch;
 	} while (ch != '\n');
 	return buffer_ptr;
+}
+
+//----------------------------------------------------------------------------
+// save_ubasicp_prog : save a ubasic+ program from RAM to FLASH
+// =================
+//
+// Description
+//      1. erase specified page
+//      2. write byte stream
+//
+// Notes
+//  
+void save_ubasicp_program(uint8_t flash_seq_no) 
+{
+uint8_t  count;
+
+    if (flash_seq_no == 0) {
+        FlashErasePage((uint16_t)&FLASH_seq_0.uint8[0]);
+        for (count = 0 ; count < sizeof(shared.RAM_sequence) ; count++) {
+            FlashProgramByte((uint16_t)&FLASH_seq_0.uint8[count], shared.RAM_sequence.uint8[count]); 
+        }
+    }
 }
