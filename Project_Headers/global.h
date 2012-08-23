@@ -104,6 +104,7 @@ extern  const uint8_t spin_times[16];
 extern  seven_seg_display_t   display_buff;
 
 extern  char    tempstring[TEMP_STRING_SIZE];
+extern  char    cmd_string[TEMP_STRING_SIZE];
 
 //extern union {
 //    uint8_t   cmd_data[MAX_STRIP_CMDS * 2];

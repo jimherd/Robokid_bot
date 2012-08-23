@@ -1633,7 +1633,7 @@ char		ch;
 	ptr=0;
 	do {
 		ch = string[ptr++];
-		tempstring[buffer_ptr++] = ch;
+		string[buffer_ptr++] = ch;
 	} while (ch != '\n');
 	return buffer_ptr;
 }

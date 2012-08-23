@@ -37,16 +37,18 @@ char dummy;
 //** Description:   SCI Rx function
 //** Parameters:    None
 //** Returns:       None
+//** Notes          Receiver has already been enabled
 //***********************************************************************
 char sci_rx_byte()
 {
 char rec_char;
 
-    SCI1C2_RE = 1;           	// enable Rx
+	if(SCI1S1_RDRF) {           //1st step of RDRF clear procedure
+      rec_char = SCI1S1;        //2nd step of RDRF clear procedure
+    }
     while(!SCI1S1_RDRF)         
         ;                       // wait for character
     rec_char = SCI1D;        	// get received character
-    SCI1C2_RE = 0;              // disable Rx
     return rec_char;			 			
 }
 
@@ -140,12 +142,16 @@ uint8_t read_line(char string[])
 {
 	uint8_t   i;
 	
+//	DISABLE_INTERRUPTS;
 	for(i=0 ; i < TEMP_STRING_SIZE ; i++){
-		if ((string[i] = sci_rx_byte()) == '\n') {
+		string[i] = sci_rx_byte();
+		if (string[i] == '\n') {
+//			ENABLE_INTERRUPTS
 			string[i+1] = '\0';
 			return i;
 		}
 	}
+//	ENABLE_INTERRUPTS;
 //
 // To here if line is too long. Insert NULL at end of buffer and return maximum size
 // 

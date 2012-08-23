@@ -33,6 +33,7 @@ seven_seg_display_t   display_buff;
 // general purpose character string
 //
 char   tempstring[TEMP_STRING_SIZE];
+char   cmd_string[TEMP_STRING_SIZE];
 //
 // In RAM copy FLASH data
 //

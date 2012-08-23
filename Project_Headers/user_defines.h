@@ -108,7 +108,7 @@
 #define     TICK_TIME_IN_MS          8
 #define     TICKS_IN_ONE_SECOND    (1000/TICK_TIME_IN_MS)
 //
-#define     BAUD        57600               // Baud rate (BPS)
+#define     BAUD        9600               // Baud rate (BPS)
 
 #define     MOTOR_TEST_TIME_OUT     (6 * TICKS_IN_ONE_SECOND)
 

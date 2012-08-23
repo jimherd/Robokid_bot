@@ -509,12 +509,12 @@ uint16_t  ticks;
 //
 // output message on serial port
 //    
-    send_msg("RoboKid Vehicle V1.0B\r\n");
-    send_msg("Unit active\r\n");
+//    send_msg("RoboKid Vehicle V1.0B\r\n");
+//    send_msg("Unit active\r\n");
 // **
 // ** temp call to test a script
 //
-    experiment_10();
+    experiment_11();
     HANG;
 //
 // print battery voltage value

@@ -458,5 +458,21 @@ uint8_t experiment_10(void) {
 	return 0;
 }
 
+//----------------------------------------------------------------------------
+// experiment_11 : run a ubasic test script
+// =============
+//
+// Notes
+//
+uint8_t experiment_11(void) {
+
+	FOREVER {
+		read_line(cmd_string);
+		trim_line(cmd_string);
+		send_msg(cmd_string);
+	}
+	return 0;
+}
+
 
 

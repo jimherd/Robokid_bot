@@ -16,5 +16,6 @@ uint8_t experiment_7(uint8_t count);
 uint8_t experiment_8(void);
 uint8_t experiment_9(uint8_t count);
 uint8_t experiment_10(void);
+uint8_t experiment_10(void);
 
 #endif
