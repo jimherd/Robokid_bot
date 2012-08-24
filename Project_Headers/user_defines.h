@@ -399,7 +399,7 @@ typedef enum
 #define		LINE_NO_TERM		-2
 
 typedef enum {
-	L_START, L_SCAN, L_COPY_STRING, L_SKIP_SPACES
+	L_START, L_SCAN, L_COPY_STRING, L_SKIP_SPACES, L_EXIT
 } line_scan_t;
 
 #endif

@@ -1524,7 +1524,7 @@ int8_t    style;
 //   
 int8_t trim_line(char line[]) {
 	
-uint8_t		  start_ptr, end_ptr, in_ptr, out_ptr, i;
+uint8_t		  start_ptr, end_ptr, in_ptr, out_ptr, i, status;
 line_scan_t	  scan_state;
 //
 // 1. Initialise start and end buffer pointers
@@ -1557,7 +1557,8 @@ line_scan_t	  scan_state;
 	out_ptr = 0;
 	FOREVER {
 		if (in_ptr >= (TEMP_STRING_SIZE - 1)) {
-			break;		// check to ensure that scan does not overrun end of buffer
+			status = LINE_USEFUL;		// check to ensure that scan does not overrun end of buffer
+			scan_state = L_EXIT;			
 		}
 		switch (scan_state) {
 		case L_START :
@@ -1565,7 +1566,8 @@ line_scan_t	  scan_state;
 				in_ptr++;
 			} else if (line[in_ptr] == '\n') {
 				line[out_ptr++] = line[in_ptr];
-				return LINE_BLANK;
+				status = LINE_BLANK;
+				scan_state = L_EXIT;
 			} else {
 				scan_state = L_SCAN;
 			}
@@ -1574,9 +1576,11 @@ line_scan_t	  scan_state;
 			if (line[in_ptr] == '#') {
 				line[out_ptr] = '\n';
 				if (out_ptr == 0) {
-					return LINE_BLANK;
+					status = LINE_BLANK;
+					scan_state = L_EXIT;
 				} else {
-					return LINE_USEFUL;
+					status = LINE_USEFUL;
+					scan_state = L_EXIT;
 				}
 			} else if (line[in_ptr] == '\'') {
 					line[out_ptr++] = line[in_ptr++];
@@ -1587,9 +1591,11 @@ line_scan_t	  scan_state;
 			} else if (line[in_ptr] == '\n') {
 					line[out_ptr] = line[in_ptr];
 					if (out_ptr == 0) {
-						return LINE_BLANK;
+						status = LINE_BLANK;
+						scan_state = L_EXIT;
 					} else {
-						return LINE_USEFUL;
+						status = LINE_USEFUL;
+						scan_state = L_EXIT;
 					}
 			} else {
 				line[out_ptr++] = line[in_ptr++];
@@ -1609,11 +1615,13 @@ line_scan_t	  scan_state;
 				scan_state = L_SCAN;
 			}
 			break;
+		case L_EXIT:
+			return status;
+			break;
 		default:
 			break;
 		}
 	}
-	return LINE_USEFUL;
 }
 
 //----------------------------------------------------------------------------
