@@ -142,16 +142,13 @@ uint8_t read_line(char string[])
 {
 	uint8_t   i;
 	
-//	DISABLE_INTERRUPTS;
 	for(i=0 ; i < TEMP_STRING_SIZE ; i++){
 		string[i] = sci_rx_byte();
 		if (string[i] == '\n') {
-//			ENABLE_INTERRUPTS
 			string[i+1] = '\0';
 			return i;
 		}
 	}
-//	ENABLE_INTERRUPTS;
 //
 // To here if line is too long. Insert NULL at end of buffer and return maximum size
 // 

@@ -1550,7 +1550,10 @@ line_scan_t	  scan_state;
 		}
 	}
 //
-// 3. run MEALY state machine to remove additional spaces (see project notes)
+// 3. run MEALY state machine to 
+//		a. remove additional spaces
+//		b. remove '#' comments
+//		c. leave '-----' strings untouched
 //
 	scan_state = L_START;
 	in_ptr = 0;
@@ -1565,7 +1568,8 @@ line_scan_t	  scan_state;
 			if (line[in_ptr] == ' ') {
 				in_ptr++;
 			} else if (line[in_ptr] == '\n') {
-				line[out_ptr++] = line[in_ptr];
+				line[out_ptr] = '\n';
+				line[out_ptr+1] = '\0';
 				status = LINE_BLANK;
 				scan_state = L_EXIT;
 			} else {
@@ -1573,8 +1577,28 @@ line_scan_t	  scan_state;
 			}
 			break;
 		case L_SCAN:
-			if (line[in_ptr] == '#') {
+			switch (line[in_ptr]) {   // check for specific characters
+			case '#':
 				line[out_ptr] = '\n';
+				line[out_ptr+1] = '\0';
+				if (out_ptr == 0) {
+					status = LINE_BLANK;
+				} else {
+					status = LINE_USEFUL;
+				}
+				scan_state = L_EXIT;
+				break;
+			case '\'':
+				line[out_ptr++] = line[in_ptr++];
+				scan_state = L_COPY_STRING;
+				break;
+			case ' ':
+				line[out_ptr++] = line[in_ptr++];
+				scan_state = L_SKIP_SPACES;
+				break;
+			case '\n':
+				line[out_ptr] = line[in_ptr];
+				line[out_ptr+1] = '\0';
 				if (out_ptr == 0) {
 					status = LINE_BLANK;
 					scan_state = L_EXIT;
@@ -1582,22 +1606,8 @@ line_scan_t	  scan_state;
 					status = LINE_USEFUL;
 					scan_state = L_EXIT;
 				}
-			} else if (line[in_ptr] == '\'') {
-					line[out_ptr++] = line[in_ptr++];
-					scan_state = L_COPY_STRING;
-			} else if (line[in_ptr] == ' ') {
-					line[out_ptr++] = line[in_ptr++];
-					scan_state = L_SKIP_SPACES;
-			} else if (line[in_ptr] == '\n') {
-					line[out_ptr] = line[in_ptr];
-					if (out_ptr == 0) {
-						status = LINE_BLANK;
-						scan_state = L_EXIT;
-					} else {
-						status = LINE_USEFUL;
-						scan_state = L_EXIT;
-					}
-			} else {
+				break;
+			default:
 				line[out_ptr++] = line[in_ptr++];
 			}
 			break;
@@ -1608,17 +1618,34 @@ line_scan_t	  scan_state;
 			line[out_ptr++] = line[in_ptr++];
 			break;
 		case L_SKIP_SPACES:
-			if (line[in_ptr] == ' ') {
+			switch (line[in_ptr]) {   // check for specific characters
+			case ' ':
 				in_ptr++;
-			} else {
+				break;
+			case '#':
+				line[out_ptr-1] = '\n';
+				line[out_ptr] = '\0';
+				status = LINE_USEFUL;
+				scan_state = L_EXIT;
+				break;
+			case '\'':
+				line[out_ptr++] = line[in_ptr++];
+				scan_state = L_COPY_STRING;
+				break;
+			case '\n':
+				line[out_ptr-1] = '\'';
+				line[out_ptr] = '\n';
+				line[out_ptr+1] = '\0';		
+				scan_state = L_EXIT;
+				break;
+			default:    // all other characters
 				line[out_ptr++] = line[in_ptr++];
 				scan_state = L_SCAN;
+				break;
 			}
 			break;
 		case L_EXIT:
 			return status;
-			break;
-		default:
 			break;
 		}
 	}
