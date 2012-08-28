@@ -128,8 +128,8 @@ void * bcd(char byte, char number_str[])
 }
 
 //----------------------------------------------------------------------------
-// read_line : read an ASCII string from the serial input via the USB channel
-// =========
+// get_line : read an ASCII string from the serial input via the USB channel
+// ========
 //
 // Description
 //		Read an ASCII string via the USB virtual COM port.  String will be terminated
@@ -138,7 +138,7 @@ void * bcd(char byte, char number_str[])
 //
 // Notes
 //
-uint8_t read_line(char string[])
+uint8_t get_line(char string[])
 {
 	uint8_t   i;
 	

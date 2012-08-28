@@ -9,6 +9,6 @@ extern void send_msg(char *msg);
 extern void * HexToAsc(char byte, char *number_str);
 extern void * HexToBin(char byte, char *number_str);
 extern void * bcd(char byte, char number_str[]);
-extern uint8_t read_line(char string[]);
+extern uint8_t get_line(char string[]);
 
 #endif /* __sci_H */

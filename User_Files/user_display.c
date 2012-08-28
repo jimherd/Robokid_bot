@@ -536,5 +536,48 @@ uint8_t   tens, units;
     show_dual_chars((tens + '0'), (units + '0'), flash_mode);    
 }
 
+//----------------------------------------------------------------------------
+// display_error : output an error string 'ErrorXX'
+// =============
+//
+// Notes
+//      Display error string with an error number. Continue when user presses
+//		button A.
+//
+// Parameters
+//      error   : number 00 to 99
+//
+void display_error(uint8_t error) {
+
+uint8_t   tens, units;
+
+	tens = error / 10;
+	units = error - (10 * tens);
+	tempstring[0] = 'E';
+	tempstring[1] = 'r';
+	tempstring[2] = 'r';
+	tempstring[3] = 'o';
+	tempstring[4] = 'r';
+	tempstring[5] = '0' + tens;
+	tempstring[6] = '0' + units;
+	tempstring[7] = '\0';
+	display_string(tempstring, 0);
+	push_LED_display(); 
+    set_LED(LED_A, FLASH_ON);
+    clr_LED(LED_B);   
+    clr_LED(LED_C);   
+    clr_LED(LED_D); 
+    FOREVER {
+        if (switch_A == PRESSED) {             
+            clr_LED(LED_A);    
+            WAIT_SWITCH_RELEASED(switch_A); 
+            CLEAR_DISPLAY;
+            pop_LED_display(); 
+            break;
+        } else {
+            continue;
+        }
+    }
+}
 
 /* END user_display */

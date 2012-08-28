@@ -159,28 +159,28 @@ const sound_file_t   snd_bump = {
 
 const seven_seg_display_t  zero_display = { 
     SEVEN_SEG_AB, 1, 0, 0, 0,
-    CHAR_0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,
-    CHAR_0, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,
+    CHAR_CLR, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,
+    CHAR_CLR, 0, 0, 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,
 };
 
 //----------------------------------------------------------------------------
 // test sequence  : move forward for 2 seconds.
 //
-const uint16_t  program_a[50] = {
-
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  40              ), 
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  MOTOR_FORWARD   ),
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  LEFT_MOTOR      ),
-    INSTRUCTION(SET_PARAMETER,  NO_MOD,     SPEED           ),
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  40              ), 
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  MOTOR_FORWARD   ),
-    INSTRUCTION(PUSH_L8,        IMMEDIATE,  RIGHT_MOTOR     ),
-    INSTRUCTION(SET_PARAMETER,  NO_MOD,     SPEED           ),
-    INSTRUCTION(EXECUTE,        NO_MOD,     START           ),
-    INSTRUCTION(DELAY,          IMMEDIATE,  20              ),
-    INSTRUCTION(EXECUTE,        NO_MOD,     STOP            ),
-    INSTRUCTION(EXIT,           NO_MOD,     NO_DATA         ),
-};
+//const uint16_t  program_a[50] = {
+//
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  40              ), 
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  MOTOR_FORWARD   ),
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  LEFT_MOTOR      ),
+//    INSTRUCTION(SET_PARAMETER,  NO_MOD,     SPEED           ),
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  40              ), 
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  MOTOR_FORWARD   ),
+//    INSTRUCTION(PUSH_L8,        IMMEDIATE,  RIGHT_MOTOR     ),
+//    INSTRUCTION(SET_PARAMETER,  NO_MOD,     SPEED           ),
+//    INSTRUCTION(EXECUTE,        NO_MOD,     START           ),
+//    INSTRUCTION(DELAY,          IMMEDIATE,  20              ),
+//    INSTRUCTION(EXECUTE,        NO_MOD,     STOP            ),
+//    INSTRUCTION(EXIT,           NO_MOD,     NO_DATA         ),
+//};
 
 //
 // decompressed robot command data structure
@@ -208,19 +208,19 @@ struct  {
 //
 union {
 	// storage for ubasic+ program
-	char			ubasicp_program_space[1024]; 
+	char	ubasicp_program_space[512]; 
 	
 	// storage for data read from strip programming
 	union {
 		uint8_t cmd_data[MAX_STRIP_CMDS * 2];
 		uint8_t strip_data[MAX_STRIP_CMDS][2];
 	} seq;
-	
-	// storage for robot sequence commands
-	union {
-		uint16_t uint16[RAM_SEQUENCE_SIZE];
-		uint8_t uint8[RAM_SEQUENCE_SIZE * 2];
-	} RAM_sequence;
+//	
+//	// storage for robot sequence commands
+//	union {
+//		uint16_t uint16[RAM_SEQUENCE_SIZE];
+//		uint8_t uint8[RAM_SEQUENCE_SIZE * 2];
+//	} RAM_sequence;
 	
 } shared;
 

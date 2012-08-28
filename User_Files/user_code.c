@@ -32,10 +32,7 @@ FLASH_data_t    FLASH_data;
 // 
 #pragma   DATA_SEG    FLASH_PRG1
 
-union {
-    uint16_t  uint16[256];
-    uint8_t   uint8[512];
-} FLASH_seq_0;
+uint8_t   FLASH_seq_0[512];
 
 #pragma  DATA_SEG    DEFAULT
 //----------------------------------------------------------------------------

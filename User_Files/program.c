@@ -112,7 +112,7 @@ uint8_t run_program_mode_0(void) {
 
 mode_state_t  state;
 sequence_mode_t   seq_mode;
-uint8_t    i;
+//uint8_t    i;
 
     state = MODE_INIT;
     seq_mode = FIRST_SEQUENCE_MODE;
@@ -126,9 +126,9 @@ uint8_t    i;
 //
 // initialise program sequence area
 //
-    for (i=0 ; i < RAM_SEQUENCE_SIZE ; i++) {
-        shared.RAM_sequence.uint16[i] = 0xFFFF;
-    }
+//    for (i=0 ; i < RAM_SEQUENCE_SIZE ; i++) {
+//        shared.RAM_sequence.uint16[i] = 0xFFFF;
+//   }
 //
 // main loop
 //       
@@ -189,7 +189,7 @@ uint8_t    i;
         push_LED_display();       
         switch (seq_mode) {
             case PLAY :
-                run_sequence(shared.RAM_sequence.uint16);
+//                run_sequence(shared.RAM_sequence.uint16);
                 break;            
             case COLLECT :
                 input_distance_sequence();
@@ -296,8 +296,8 @@ jmp_buf   env;
         }
         
         if (switch_C == PRESSED) {            //  Load termination command
-            store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, STOP); seq_ptr++;
-            store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXIT,    NO_MOD, NO_DATA);  seq_ptr++;
+//            store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, STOP); seq_ptr++;
+//            store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXIT,    NO_MOD, NO_DATA);  seq_ptr++;
             WAIT_SWITCH_RELEASED(switch_C);
             pop_LED_display();
             return 0;
@@ -397,66 +397,66 @@ jmp_buf   env;
                     case CMD_FORWARD    :
                         display_number(distance, 0);
                         distance =  (distance * WHEEL_CONSTANT) / 100;    // convert to wheel counts
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;    
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                          
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;    
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                          
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
                         break;
                     case CMD_BACKWARD   :
                         display_number(distance, 0);  
                         distance =  (distance * WHEEL_CONSTANT) / 100;    // convert to wheel counts
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;    
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;    
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
                         break;
                     case CMD_SPIN_LEFT  :
                         display_number(distance, 0);
                         if (distance == 0) { distance = 0;}
                         if (distance == 45) { distance = 8;}
                         if (distance == 90) { distance = 16;}       // convert to wheel counts
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;    
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;    
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
                         break;
                     case CMD_SPIN_RIGHT :
                         display_number(distance, 0);
                         if (distance == 0) { distance = 0;}
                         if (distance == 45) { distance = 8;}
                         if (distance == 90) { distance = 16;}      // convert to wheel counts 
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;    
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
-                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_FORWARD); seq_ptr++;    
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, LEFT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, WHEEL_SENSOR_CALIBRATE_SPEED); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, MOTOR_BACKWARD); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_L8, IMMEDIATE, RIGHT_MOTOR); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, SPEED); seq_ptr++;                     
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, PUSH_16, IMMEDIATE, distance); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, SET_PARAMETER, NO_MOD, DISTANCE); seq_ptr++;
+//                        store_instruction(shared.RAM_sequence.uint16, seq_ptr, EXECUTE, NO_MOD, MOVE_DISTANCE); seq_ptr++; 
                         break;
                     default : 
                         break;
@@ -563,7 +563,7 @@ sequence_mode_t   seq_mode;
         push_LED_display();       
         switch (seq_mode) {
             case PLAY :
-                run_sequence(shared.RAM_sequence.uint16);
+//                run_sequence(shared.RAM_sequence.uint16);
                 break;            
             case COLLECT :
                 input_timed_sequence();
@@ -1283,9 +1283,9 @@ void save_sequence(uint8_t flash_seq_no)
 uint8_t  count;
 
     if (flash_seq_no == 0) {
-        FlashErasePage((uint16_t)&FLASH_seq_0.uint8[0]);
-        for (count = 0 ; count < sizeof(shared.RAM_sequence) ; count++) {
-            FlashProgramByte((uint16_t)&FLASH_seq_0.uint8[count], shared.RAM_sequence.uint8[count]); 
+        FlashErasePage((uint16_t)&FLASH_seq_0[0]);
+        for (count = 0 ; count < sizeof(shared.ubasicp_program_space) ; count++) {
+            FlashProgramByte((uint16_t)&FLASH_seq_0[count], shared.ubasicp_program_space[count]); 
         }
     }
 }
@@ -1301,7 +1301,7 @@ uint8_t  count;
 void load_sequence(uint8_t flash_seq_no) 
 {
     if (flash_seq_no == 0) {
-        memcpy(&shared.RAM_sequence.uint8[0], &FLASH_seq_0.uint8[0],  (RAM_SEQUENCE_SIZE*2)); 
+        memcpy(&shared.ubasicp_program_space[0], &FLASH_seq_0[0],  (RAM_SEQUENCE_SIZE*2)); 
     }
 }
 
@@ -1315,19 +1315,19 @@ void load_sequence(uint8_t flash_seq_no)
 //  
 void dump_sequence(void) 
 {
-uint8_t    i;
+//uint8_t    i;
 
     send_msg("Robot commands in RAM sequence 0\r\n");
-    for (i=0 ; i < (sizeof(shared.RAM_sequence.uint16)) ; i++) {
-        if (shared.RAM_sequence.uint16[i] == 0xFFFF) {   // unused entries show as all 1's
-            break;
-        };
-        decode_command(shared.RAM_sequence.uint16[i]);
-        send_msg(bcd(robot_command.op_code, tempstring)); send_msg("\t");
-        send_msg(bcd(robot_command.modifier, tempstring)); send_msg("\t");
-        send_msg(bcd(robot_command.data, tempstring));
-        send_msg("\r\n");   
-    }        
+//    for (i=0 ; i < (sizeof(shared.RAM_sequence.uint16)) ; i++) {
+//        if (shared.RAM_sequence.uint16[i] == 0xFFFF) {   // unused entries show as all 1's
+//            break;
+//       };
+//        decode_command(shared.RAM_sequence.uint16[i]);
+//        send_msg(bcd(robot_command.op_code, tempstring)); send_msg("\t");
+//        send_msg(bcd(robot_command.modifier, tempstring)); send_msg("\t");
+//        send_msg(bcd(robot_command.data, tempstring));
+//        send_msg("\r\n");   
+//    }        
 }
 
 //----------------------------------------------------------------------------
@@ -1438,7 +1438,7 @@ sequence_mode_t   seq_mode;
             case RECALL :
                 break;
             case DUMP :
-                dump_strips();
+                dump_ubasicp_program(0);
                 break;                                                                  
             default :
                 break;
@@ -1482,14 +1482,14 @@ int8_t    style;
 // set pointer to start of buffer and set time-out counter
 // Note : 'string_ptr' will point to next free space in 512 character buffer
 //    
-    shared.ubasic_program_space[0] = '\0';
+    shared.ubasicp_program_space[0] = '\0';
     string_ptr = 0;
     CLR_TIMER16;                        // clear 16-bit 8mS tick counter
 //
 //  Read lines of characters from the serial port
 //
     FOREVER {
-    	read_line(tempstring);
+    	get_line(tempstring);
     	style = trim_line(tempstring);
     	if (tempstring[0] == '@') {			// @ = end of program transfer
     		break;
@@ -1497,7 +1497,7 @@ int8_t    style;
     	if (style == LINE_BLANK) {          // don't store blank lines
     		continue;
     	}
-    	if (style == LINE_NO_TERM) {
+    	if (style == LINE_NO_TERM) {		// problem
     		break;
     	}
     	string_ptr = store_line(string_ptr, tempstring);
@@ -1656,7 +1656,9 @@ line_scan_t	  scan_state;
 // ==========
 //
 // Description
-//		
+//		Copy line of code to RAM buffer.  Line should be terminated by a '\n' 
+//		character.  A '\0' character is place at the end of the copied
+//		string to force the program to be a standard null terminated string.
 //
 // Notes
 //   
@@ -1665,11 +1667,12 @@ uint8_t store_line(uint8_t buffer_ptr, char string[]) {
 uint8_t		ptr;
 char		ch;
 
-	ptr=0;
+	ptr = 0;
 	do {
 		ch = string[ptr++];
-		string[buffer_ptr++] = ch;
+		shared.ubasicp_program_space[buffer_ptr++] = ch;
 	} while (ch != '\n');
+	shared.ubasicp_program_space[buffer_ptr] = '\0';   // put NULL at end of program text
 	return buffer_ptr;
 }
 
@@ -1682,15 +1685,55 @@ char		ch;
 //      2. write byte stream
 //
 // Notes
+//		The microcontroller FLASH memory is speced for > 100,000 program/erase
+//		cycles.
 //  
 void save_ubasicp_program(uint8_t flash_seq_no) 
 {
-uint8_t  count;
+uint16_t  byte_ptr;
+uint16_t	  count;
 
+	byte_ptr = (uint16_t)&FLASH_seq_0[0];
     if (flash_seq_no == 0) {
-        FlashErasePage((uint16_t)&FLASH_seq_0.uint8[0]);
-        for (count = 0 ; count < sizeof(shared.RAM_sequence) ; count++) {
-            FlashProgramByte((uint16_t)&FLASH_seq_0.uint8[count], shared.RAM_sequence.uint8[count]); 
+        FlashErasePage(byte_ptr);
+        for (count = 0 ; count < 512 ; count++) {
+            FlashProgramByte(byte_ptr, shared.ubasicp_program_space[count]);
         }
     }
 }
+
+//----------------------------------------------------------------------------
+// dump_ubasicp_prog : copy a ubasic+ program from FLASH to the serial port
+// =================
+//
+// Description
+//      Transfer the current ubasic+ program to the serial/USB port. Terminate with
+//		'@\n' line.  
+//
+// Notes
+//  
+void dump_ubasicp_program(uint8_t flash_seq_no) 
+{
+	uint8_t    program_ptr;
+	
+	FOREVER {
+		program_ptr = read_line(flash_seq_no, program_ptr, cmd_string);
+		send_msg(cmd_string);
+	}
+}
+
+//----------------------------------------------------------------------------
+// read_line : read a line of ubasic+ code from the FLASH buffer
+// =========
+//
+// Description
+//
+// Notes
+//   
+uint8_t read_line(uint8_t flash_seq_no, uint8_t buffer_ptr, char string[]) {
+
+	
+//	FLASH_seq_0.uint8[count]
+	return buffer_ptr;
+}
+

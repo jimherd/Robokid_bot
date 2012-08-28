@@ -146,14 +146,11 @@ extern struct  {
 //} RAM_sequence;
 
 
-extern union {
-    uint16_t  uint16[256];
-    uint8_t   uint8[512];
-} FLASH_seq_0;
+extern uint8_t     FLASH_seq_0[512];
 
 extern union {
 	// storage for ubasic program
-	char			ubasic_program_space[1024]; 
+	char	ubasicp_program_space[512]; 
 
 	// storage for data read from strip programming
 	union {
@@ -161,11 +158,11 @@ extern union {
 		uint8_t strip_data[MAX_STRIP_CMDS][2];
 	} seq;
 	
-	// storage for robot sequence commands
-	union {
-		uint16_t uint16[RAM_SEQUENCE_SIZE];
-		uint8_t uint8[RAM_SEQUENCE_SIZE * 2];
-	} RAM_sequence;
+//	// storage for robot sequence commands
+//	union {
+//		uint16_t uint16[RAM_SEQUENCE_SIZE];
+//		uint8_t uint8[RAM_SEQUENCE_SIZE * 2];
+//	} RAM_sequence;
 	
 } shared;
 

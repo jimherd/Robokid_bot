@@ -465,11 +465,18 @@ uint8_t experiment_10(void) {
 // Notes
 //
 uint8_t experiment_11(void) {
+	
+uint8_t  program_ptr, style;
 
+	program_ptr = 0;
+	display_error(42);
 	FOREVER {
-		read_line(cmd_string);
-		trim_line(cmd_string);
+		get_line(cmd_string);
+		style = trim_line(cmd_string);
 		send_msg(cmd_string);
+		if (style == LINE_USEFUL) {
+			program_ptr = store_line(program_ptr, cmd_string);
+		}
 	}
 	return 0;
 }

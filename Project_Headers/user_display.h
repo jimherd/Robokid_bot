@@ -147,6 +147,7 @@ void clr_all_LEDs(void);
 void set_flash_rate(uint8_t  rate);
 void flash_LED(uint8_t  LED_code, uint8_t  count);
 void display_number(uint8_t value, uint8_t flash_mode);
+void display_error(uint8_t error);
 
 /* END user_display */
 
