@@ -219,8 +219,10 @@
 //----------------------------------------------------------------------------
 // error codes
 //
-#define     OK          0
-#define     FAIL        1
+#define     OK          	0
+#define     FAIL        	1
+#define		SEQ_NO_ERROR	2	// buffer sequence number outwith range 0 to (n-1) (n typ 4)
+#define		LINE_TOO_LONG	3   // line longer than TEMP_STRING_SIZE. Line terminated by '\n'
 
 //----------------------------------------------------------------------------
 // ON/OFF codes
@@ -401,5 +403,12 @@ typedef enum
 typedef enum {
 	L_START, L_SCAN, L_COPY_STRING, L_SKIP_SPACES, L_EXIT
 } line_scan_t;
+
+//----------------------------------------------------------------------------
+// FLASH program sequence storage constants
+//
+#define  NOS_STORED_PROGRAMS	   4
+#define  PROG_BUFFER_SIZE		1024
+
 
 #endif

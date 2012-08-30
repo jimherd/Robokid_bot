@@ -146,7 +146,7 @@ extern struct  {
 //} RAM_sequence;
 
 
-extern uint8_t     FLASH_seq_0[512];
+extern uint8_t     FLASH_programs[NOS_STORED_PROGRAMS][PROG_BUFFER_SIZE];
 
 extern union {
 	// storage for ubasic program

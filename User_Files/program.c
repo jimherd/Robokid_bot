@@ -1283,9 +1283,9 @@ void save_sequence(uint8_t flash_seq_no)
 uint8_t  count;
 
     if (flash_seq_no == 0) {
-        FlashErasePage((uint16_t)&FLASH_seq_0[0]);
+        FlashErasePage((uint16_t)&FLASH_programs[flash_seq_no][0]);
         for (count = 0 ; count < sizeof(shared.ubasicp_program_space) ; count++) {
-            FlashProgramByte((uint16_t)&FLASH_seq_0[count], shared.ubasicp_program_space[count]); 
+            FlashProgramByte((uint16_t)&FLASH_programs[flash_seq_no][count], shared.ubasicp_program_space[count]); 
         }
     }
 }
@@ -1301,7 +1301,7 @@ uint8_t  count;
 void load_sequence(uint8_t flash_seq_no) 
 {
     if (flash_seq_no == 0) {
-        memcpy(&shared.ubasicp_program_space[0], &FLASH_seq_0[0],  (RAM_SEQUENCE_SIZE*2)); 
+        memcpy(&shared.ubasicp_program_space[0], &FLASH_programs[0][0],  (RAM_SEQUENCE_SIZE*2)); 
     }
 }
 
@@ -1504,7 +1504,7 @@ int8_t    style;
     }
 	tempstring[string_ptr] = '\0';		// ensure there is a null terminator
 //
-// Store buffer in FLASH (dumps entire 512 bytes)
+// Store buffer in FLASH (dumps entire buffer)
 //
 	save_ubasicp_program(0);
 	
@@ -1687,18 +1687,29 @@ char		ch;
 // Notes
 //		The microcontroller FLASH memory is speced for > 100,000 program/erase
 //		cycles.
+//
+//	@param[in]	flash_seq_no	program number (typ. 0 to 3)
 //  
 void save_ubasicp_program(uint8_t flash_seq_no) 
 {
 uint16_t  byte_ptr;
 uint16_t	  count;
 
-	byte_ptr = (uint16_t)&FLASH_seq_0[0];
-    if (flash_seq_no == 0) {
-        FlashErasePage(byte_ptr);
-        for (count = 0 ; count < 512 ; count++) {
-            FlashProgramByte(byte_ptr, shared.ubasicp_program_space[count]);
-        }
+//
+// check legal storage block
+//
+	if (flash_seq_no >= NOS_STORED_PROGRAMS) {
+		display_error(SEQ_NO_ERROR);
+		return;
+	}
+//
+// FLASH write page
+//
+	byte_ptr = (uint16_t)&FLASH_programs[flash_seq_no];
+
+    FlashErasePage(byte_ptr);
+    for (count = 0 ; count < PROG_BUFFER_SIZE ; count++) {
+        FlashProgramByte(byte_ptr, shared.ubasicp_program_space[count]);
     }
 }
 
@@ -1715,7 +1726,11 @@ uint16_t	  count;
 void dump_ubasicp_program(uint8_t flash_seq_no) 
 {
 	uint8_t    program_ptr;
-	
+
+	if (flash_seq_no >= NOS_STORED_PROGRAMS) {
+		display_error(SEQ_NO_ERROR);
+		return;
+	}
 	FOREVER {
 		program_ptr = read_line(flash_seq_no, program_ptr, cmd_string);
 		send_msg(cmd_string);
@@ -1723,17 +1738,37 @@ void dump_ubasicp_program(uint8_t flash_seq_no)
 }
 
 //----------------------------------------------------------------------------
-// read_line : read a line of ubasic+ code from the FLASH buffer
+// read_line : read a line of ubasic+ code from a FLASH buffer page
 // =========
 //
 // Description
-//
+//		get a line of characters from a specified FLASH buffer.  Line to be 
+//		terminated by a '\n' (newline) character.
 // Notes
+//		Two possible errors
+//			SEQ_NO_ERROR  : typically there are 4 sequence stores in FLASH
+//			LINE_TOO_LONG : typically a line is restricted to 47 characters.
 //   
 uint8_t read_line(uint8_t flash_seq_no, uint8_t buffer_ptr, char string[]) {
 
+	uint8_t	out_ptr;
 	
-//	FLASH_seq_0.uint8[count]
+	if (flash_seq_no >= NOS_STORED_PROGRAMS) {
+		display_error(SEQ_NO_ERROR);
+		return 0;
+	}
+	out_ptr = 0;
+	FOREVER {
+		string[out_ptr] = FLASH_programs[flash_seq_no][buffer_ptr++];
+		if (string[out_ptr++] == '\n') {
+			string[out_ptr] = '\0';
+			break;
+		}
+		if (out_ptr >= TEMP_STRING_SIZE) {
+			display_error(LINE_TOO_LONG);
+			return 0;
+		}
+	}
 	return buffer_ptr;
 }
 

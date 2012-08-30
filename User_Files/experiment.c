@@ -474,10 +474,14 @@ uint8_t  program_ptr, style;
 		get_line(cmd_string);
 		style = trim_line(cmd_string);
 		send_msg(cmd_string);
+		if (tempstring[0] == '@') {			// @ = end of program transfer
+    		break;
+    	}
 		if (style == LINE_USEFUL) {
 			program_ptr = store_line(program_ptr, cmd_string);
 		}
 	}
+	save_ubasicp_program(0);
 	return 0;
 }
 

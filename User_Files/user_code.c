@@ -26,15 +26,20 @@
 
 FLASH_data_t    FLASH_data;
 
+//----------------------------------------------------------------------------
+// segment defined to hold a set of ubasic+ programs
+// Each program is held in a set of 512 FLASH pages
+//
 #pragma  DATA_SEG    DEFAULT
 //
 // Segment : FLASH_PRG1 : store program 1
 // 
 #pragma   DATA_SEG    FLASH_PRG1
 
-uint8_t   FLASH_seq_0[512];
+uint8_t   FLASH_programs[NOS_STORED_PROGRAMS][PROG_BUFFER_SIZE];
 
 #pragma  DATA_SEG    DEFAULT
+
 //----------------------------------------------------------------------------
 //  definition of display strings for dual 7-segment display
 //
