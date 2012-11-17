@@ -30,6 +30,11 @@
 #define   MINOR_VERSION   '1' 
 
 //----------------------------------------------------------------------------
+// system clock
+//
+#define BUSCLK  20000000  //Bus clock frequency (Hz)
+
+//----------------------------------------------------------------------------
 // Macros
 // ======
 //
@@ -94,10 +99,6 @@
 #define  STRIP_PLAY_SPIN_SPEED     30
 #define  STRIP_PLAY_FORWARD_SPEED  75
 
-//----------------------------------------------------------------------------
-// system clock
-//
-#define BUSCLK  20000000  //Bus clock frequency (Hz)
 
 //----------------------------------------------------------------------------
 // timing defines
@@ -217,14 +218,6 @@
 #define     ALL_RELEASED   0b00111100 
 
 //----------------------------------------------------------------------------
-// error codes
-//
-#define     OK          	0
-#define     FAIL        	1
-#define		SEQ_NO_ERROR	2	// buffer sequence number outwith range 0 to (n-1) (n typ 4)
-#define		LINE_TOO_LONG	3   // line longer than TEMP_STRING_SIZE. Line terminated by '\n'
-
-//----------------------------------------------------------------------------
 // ON/OFF codes
 //
 #define     ON          0x55
@@ -279,9 +272,11 @@ typedef enum {LCR, LCx, LxR, Lxx, xCR, xCx, xxR, xxx} bump_options_t;
 // error codes
 //
 typedef enum {
-    NO_ERROR, TIME_OUT
+    OK, FAIL, SEQ_NO_ERROR, LINE_TOO_LONG, TIME_OUT
 } error_codes_t;    
-
+//
+// SEQ_NO_ERROR : buffer sequence number outwith range 0 to (n-1) (n typ 4)
+// LINE_TOO_LONG : line longer than TEMP_STRING_SIZE. Line terminated by '\n'
 //----------------------------------------------------------------------------
 // analogue channels  (0->13)
 //
@@ -409,6 +404,7 @@ typedef enum {
 //
 #define  NOS_STORED_PROGRAMS	   4
 #define  PROG_BUFFER_SIZE		1024
+#define	 UBASIC_TERMINATOR		 '@'
 
 
 #endif

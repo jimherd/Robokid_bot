@@ -1466,7 +1466,7 @@ sequence_mode_t   seq_mode;
 uint8_t get_ubasicp_program(void) {
 
 uint8_t   string_ptr;
-int8_t    style;
+int8_t    line_type;
 
     clr_all_LEDs();
     set_LED(LED_D, FLASH_ON);
@@ -1490,19 +1490,22 @@ int8_t    style;
 //
     FOREVER {
     	get_line(tempstring);
-    	style = trim_line(tempstring);
-    	if (tempstring[0] == '@') {			// @ = end of program transfer
+    	line_type = trim_line(tempstring);				// remove padding
+    	if (tempstring[0] == UBASIC_TERMINATOR) {	// @ = end of program transfer
     		break;
     	}
-    	if (style == LINE_BLANK) {          // don't store blank lines
+    	if (line_type == LINE_BLANK) {          // don't store blank lines
     		continue;
     	}
-    	if (style == LINE_NO_TERM) {		// problem
+    	if (line_type == LINE_NO_TERM) {		// problem
     		break;
     	}
     	string_ptr = store_line(string_ptr, tempstring);
     }
-	tempstring[string_ptr] = '\0';		// ensure there is a null terminator
+//
+// ensure that ubasicp program has a null terminator
+//
+	tempstring[string_ptr] = '\0';
 //
 // Store buffer in FLASH (dumps entire buffer)
 //
@@ -1512,15 +1515,16 @@ int8_t    style;
 }
 
 //----------------------------------------------------------------------------
-// trim_line : remove any unnecessary characters from a ubasic+ line of code
+// trim_line : remove any unnecessary characters from a ubasicp line of code
 // =========
 //
 // Description
-//		In order to save same in the limited ubasic+ 512 character storage buffer
-//		this routine strips out any redundant spaces and indicated any lines that
-//		need not be stores e.g. comment lines and lines with no characters.
+//		In order to save space in the limited ubasicp 512 character storage buffer
+//		this routine strips out any redundant spaces and indicates any lines that
+//		need not be stored e.g. comment lines and lines with no characters.
 //
 // Notes
+//		Uses a Mealy state machine.
 //   
 int8_t trim_line(char line[]) {
 	
@@ -1652,7 +1656,7 @@ line_scan_t	  scan_state;
 }
 
 //----------------------------------------------------------------------------
-// store_line : copy line of ubasic+ code to the program buffer
+// store_line : copy line of ubasicp code to the program buffer.
 // ==========
 //
 // Description

@@ -39,24 +39,11 @@ enum {
   TOKENIZER_LET,
   TOKENIZER_PRINT,
   TOKENIZER_IF,
-
   TOKENIZER_ELSE,
   TOKENIZER_FOR,
   TOKENIZER_TO,
   TOKENIZER_RETURN,
-
   TOKENIZER_END,
-  TOKENIZER_WAIT,		// jth
-  TOKENIZER_LEDS,		// jth
-  TOKENIZER_MOTORS,		// jth
-  TOKENIZER_SPEED,		// jth
-  TOKENIZER_SENSE,		// jth
-  TOKENIZER_READ,		// jth
-  TOKENIZER_TEXT,		// jth
-  TOKENIZER_TONE,		// jth
-  TOKENIZER_MOVE,		// jth
-  TOKENIZER_TURN,		// jth
-  TOKENIZER_CAL,		// jth
   TOKENIZER_COMMA,
   TOKENIZER_SEMICOLON,
   TOKENIZER_PLUS,
@@ -76,6 +63,18 @@ enum {
   TOKENIZER_CR,
   TOKENIZER_WHILE, 		// Bruce Land
   TOKENIZER_REM, 		// Bruce Land
+  
+  TOKENIZER_WAIT,		// jth
+  TOKENIZER_LEDS,		// jth
+  TOKENIZER_MOTORS,		// jth
+  TOKENIZER_SPEED,		// jth
+  TOKENIZER_SENSE,		// jth
+  TOKENIZER_READ,		// jth
+  TOKENIZER_DISPLAY,	// jth
+  TOKENIZER_TONE,		// jth
+  TOKENIZER_MOVE,		// jth
+  TOKENIZER_TURN,		// jth
+  TOKENIZER_CAL,		// jth
 };
 
 void tokenizer_init(char *program);

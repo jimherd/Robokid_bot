@@ -29,8 +29,8 @@
  */
  //////////////////////////////////////////////////////
  // modifed by Bruce Land, cornell university, may 2010
- // 
  // control structures changed to block-oriented
+ //
  // Jim Herd : added code for Robokid robot
  ///////////////////////////////////////////////////////
 
@@ -227,28 +227,17 @@ static void print_statement(void)
 		//	tokenizer_next();
 		} else if((tokenizer_token() == TOKENIZER_VARIABLE) ||
                   (tokenizer_token() == TOKENIZER_NUMBER)) {
-			//			send_msg(bcd(expr(), tempstring));
+						send_msg(bcd(expr(), tempstring));
 		} else {
 			break;
 		}
 	} while ((tokenizer_token() != TOKENIZER_CR) && 
             (tokenizer_token() != TOKENIZER_ENDOFINPUT));
 	send_msg("\n");
-// DEBUG_PRINTF("End of print\n");
 	tokenizer_next();
 }
 
 /*---------------------------------------------------------------------------*/
-/* source format:
-if c<255  { \ 
-    print \"button pushed\"; \
-    print \"hi\"; \
-    delay(200); } \
-else { \
-    print \"else\"; \
-	print \"made it\"; 
-} ; \
-*/
 static void if_statement(void) 
 {
 	int16_t r;
@@ -494,7 +483,7 @@ static void wait_statement(void)
 //
 //        led_* : 0=OFF, 1=ON,  2=leave in current state
 //
-static void leds_statement(void) 
+void leds_statement(void) 
 {
 uint8_t led_value;
 	
@@ -667,12 +656,12 @@ static void read_statement(void)
 }
 
 /*---------------------------------------------------------------------------*/
-// text_statement : output string to 2 character 7-seg display
-// ==============
+// display_statement : output string to 2 character 7-seg display
+// =================
 //
-static void text_statement(void) 
+static void display_statement(void) 
 {
-	accept(TOKENIZER_TEXT);
+	accept(TOKENIZER_DISPLAY);
 	do {
 		if(tokenizer_token() == TOKENIZER_STRING) {
 			tokenizer_string(string, sizeof(string));
@@ -797,8 +786,8 @@ static void statement(void)
 	case TOKENIZER_READ:
 		read_statement();
 		break;
-	case TOKENIZER_TEXT:
-		text_statement();
+	case TOKENIZER_DISPLAY:
+		display_statement();
 		break;
 	case TOKENIZER_TONE:
 		tone_statement();

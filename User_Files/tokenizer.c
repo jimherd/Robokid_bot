@@ -28,8 +28,6 @@
  *
  */
 
-
-
 #include "global.h"
 
 //#define DEBUG 0
@@ -47,28 +45,42 @@ char *ptr, *nextptr;
 struct keyword_token {
   char 		*keyword;
   uint8_t 	token;
+//  void		(*token_function)(void);
 };
 
 static uint8_t current_token = TOKENIZER_ERROR;
 
 static const struct keyword_token keywords[] = {
-  {"print", TOKENIZER_PRINT},
-  {"if", 	TOKENIZER_IF},
-  {"else", 	TOKENIZER_ELSE},
-  {"for", 	TOKENIZER_FOR},
-  {"to", 	TOKENIZER_TO},
-  {"return",TOKENIZER_RETURN},
-  {"end", 	TOKENIZER_END},
+
+  {"if", 		TOKENIZER_IF},
+  {"else", 		TOKENIZER_ELSE},
+  {"for", 		TOKENIZER_FOR},
+  {"to", 		TOKENIZER_TO},
+//  {"return",	TOKENIZER_RETURN},
+  {"end", 		TOKENIZER_END},
   
-  {"wait", 	TOKENIZER_WAIT},	// jth
-  {"leds", 	TOKENIZER_LEDS},	// jth
-  {"motors",TOKENIZER_MOTORS},	// jth
-  {"speed", TOKENIZER_SPEED},	// jth
-  {"text",	TOKENIZER_TEXT},	// jth
+  {"while", 	TOKENIZER_WHILE}, 	// brl4
+  {"#", 		TOKENIZER_REM},     // brl4
   
-  {"while", TOKENIZER_WHILE}, 	// brl4
-  {"#", 	TOKENIZER_REM},     // brl4
-  {NULL, 	TOKENIZER_ERROR}
+  {"wait", 		TOKENIZER_WAIT},	// jth
+  {"wa", 		TOKENIZER_WAIT},	// jth
+  {"leds", 		TOKENIZER_LEDS},	// jth
+  {"le", 		TOKENIZER_LEDS},	// jth
+  {"motors",	TOKENIZER_MOTORS},	// jth
+  {"mo",		TOKENIZER_MOTORS},	// jth
+  {"speed", 	TOKENIZER_SPEED},	// jth
+  {"sp", 		TOKENIZER_SPEED},	// jth
+  {"display",	TOKENIZER_DISPLAY},	// jth
+  {"di",	    TOKENIZER_DISPLAY},	// jth 
+  {"print", 	TOKENIZER_PRINT},	// jth 
+  {"pr", 		TOKENIZER_PRINT},	// jth 
+  {"sense", 	TOKENIZER_SENSE},	// jth 
+  {"se", 		TOKENIZER_SENSE}, 	// jth 
+  {"read", 		TOKENIZER_READ},	// jth 
+  {"re", 		TOKENIZER_READ},  	// jth 
+  {"tone", 		TOKENIZER_TONE},	// jth 
+  {"tn", 		TOKENIZER_TONE},    // jth 
+  {NULL, 		TOKENIZER_ERROR}
 };
 
 /*---------------------------------------------------------------------------*/

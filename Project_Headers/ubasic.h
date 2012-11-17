@@ -36,5 +36,6 @@ uint8_t ubasic_finished(void);
 
 int16_t ubasic_get_variable(uint8_t varnum);
 void ubasic_set_variable(uint8_t varum, int16_t value);
+void leds_statement(void);
 
 #endif /* __UBASIC_H__ */
