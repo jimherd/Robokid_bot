@@ -45,7 +45,6 @@ char *ptr, *nextptr;
 struct keyword_token {
   char 		*keyword;
   uint8_t 	token;
-//  void		(*token_function)(void);
 };
 
 static uint8_t current_token = TOKENIZER_ERROR;
@@ -54,12 +53,15 @@ static const struct keyword_token keywords[] = {
 
   {"if", 		TOKENIZER_IF},
   {"else", 		TOKENIZER_ELSE},
+  {"el", 		TOKENIZER_ELSE},	// jth
   {"for", 		TOKENIZER_FOR},
+  {"fo", 		TOKENIZER_FOR},		// jth
   {"to", 		TOKENIZER_TO},
 //  {"return",	TOKENIZER_RETURN},
   {"end", 		TOKENIZER_END},
   
   {"while", 	TOKENIZER_WHILE}, 	// brl4
+  {"wh", 		TOKENIZER_WHILE},	// jth
   {"#", 		TOKENIZER_REM},     // brl4
   
   {"wait", 		TOKENIZER_WAIT},	// jth

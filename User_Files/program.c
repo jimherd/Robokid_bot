@@ -1524,12 +1524,11 @@ int8_t    line_type;
 //		need not be stored e.g. comment lines and lines with no characters.
 //
 // Notes
-//		Uses a Mealy state machine.
 //   
 int8_t trim_line(char line[]) {
 	
-uint8_t		  start_ptr, end_ptr, in_ptr, out_ptr, i, status;
-line_scan_t	  scan_state;
+uint8_t		  start_ptr, end_ptr, i, status; // , in_ptr, out_ptr
+//line_scan_t	  scan_state;
 //
 // 1. Initialise start and end buffer pointers
 //
@@ -1559,7 +1558,140 @@ line_scan_t	  scan_state;
 //		b. remove '#' comments
 //		c. leave '-----' strings untouched
 //
-	scan_state = L_START;
+	status = squeeze_line(line);
+	
+//	scan_state = L_START;
+//	in_ptr = 0;
+//	out_ptr = 0;
+//	FOREVER {
+//		if (in_ptr >= (TEMP_STRING_SIZE - 1)) {
+//			status = LINE_USEFUL;		// check to ensure that scan does not overrun end of buffer
+//			scan_state = L_EXIT;			
+//		}
+//		switch (scan_state) {
+//		case L_START :
+//			if (line[in_ptr] == ' ') {
+//				in_ptr++;
+//			} else if (line[in_ptr] == '\n') {
+//				line[out_ptr] = '\n';
+//				line[out_ptr+1] = '\0';
+//				status = LINE_BLANK;
+//				scan_state = L_EXIT;
+//			} else {
+//				scan_state = L_SCAN;
+//			}
+//			break;
+//		case L_SCAN:
+//			switch (line[in_ptr]) {   // check for specific characters
+//			case '#':
+//				line[out_ptr] = '\n';
+//				line[out_ptr+1] = '\0';
+//				if (out_ptr == 0) {
+//					status = LINE_BLANK;
+//				} else {
+//					status = LINE_USEFUL;
+//				}
+//				scan_state = L_EXIT;
+//				break;
+//			case '\'':
+//				line[out_ptr++] = line[in_ptr++];
+//				scan_state = L_COPY_STRING;
+//				break;
+//			case ' ':
+//				line[out_ptr++] = line[in_ptr++];
+//				scan_state = L_SKIP_SPACES;
+//				break;
+//			case '\n':
+//				line[out_ptr] = line[in_ptr];
+//				line[out_ptr+1] = '\0';
+//				if (out_ptr == 0) {
+//					status = LINE_BLANK;
+//					scan_state = L_EXIT;
+//				} else {
+//					status = LINE_USEFUL;
+//					scan_state = L_EXIT;
+//				}
+//				break;
+//			default:
+//				line[out_ptr++] = line[in_ptr++];
+//			}
+//			break;
+//		case L_COPY_STRING:
+//			if (line[in_ptr] == '\'') {
+//				scan_state = L_SCAN;
+//			}
+//			line[out_ptr++] = line[in_ptr++];
+//			break;
+//		case L_SKIP_SPACES:
+//			switch (line[in_ptr]) {   // check for specific characters
+//			case ' ':
+//				in_ptr++;
+//				break;
+//			case '#':
+//				line[out_ptr-1] = '\n';
+//				line[out_ptr] = '\0';
+//				status = LINE_USEFUL;
+//				scan_state = L_EXIT;
+//				break;
+//			case '\'':
+//				line[out_ptr++] = line[in_ptr++];
+//				scan_state = L_COPY_STRING;
+//				break;
+//			case '\n':
+//				line[out_ptr-1] = '\'';
+//				line[out_ptr] = '\n';
+//				line[out_ptr+1] = '\0';		
+//				scan_state = L_EXIT;
+//				break;
+//			default:    // all other characters
+//				line[out_ptr++] = line[in_ptr++];
+//				scan_state = L_SCAN;
+//				break;
+//			}
+//			break;
+//		case L_EXIT:
+//			return status;
+//			break;
+//		}
+//	}
+	
+//
+// 4. Replace ubasic+ reserved words with two letter equivalents
+//
+// After running the Mealy machine, reserved words will start in location 0.
+// If location 1 is also a letter then it is a reserved word and can be
+// replaced by a word with the first two letters. If the second character is
+// not a letter then it must be a variable and therefore leave as is.
+//
+	if (status == LINE_USEFUL) {
+		if ((line[1] >= 'a') && (line[1] <= 'z')) {  // test for lowercase character
+			for (i=2 ; line[i] != ' ' ; i++) {
+				line[i] = ' ';				
+			}
+			squeeze_line(line);
+		}
+	}
+	return status;
+}
+
+//----------------------------------------------------------------------------
+// squeeze_line : run state machine to remove extra spaces and comments
+// ============
+//
+// Description
+//		In order to save space in the limited ubasicp 512 character storage buffer
+//		this routine strips out any redundant spaces and indicates any lines that
+//		need not be stored e.g. comment lines and lines with no characters.
+//
+// Notes
+// 		Uses a Mealy state machine.
+//
+int8_t squeeze_line(char line[]) {
+	
+uint8_t		  in_ptr, out_ptr, status; 
+line_scan_t	  scan_state;
+
+scan_state = L_START;
 	in_ptr = 0;
 	out_ptr = 0;
 	FOREVER {
