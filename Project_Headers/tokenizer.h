@@ -71,7 +71,7 @@ enum {
   TOKENIZER_SENSE,		// jth
   TOKENIZER_READ,		// jth
   TOKENIZER_DISPLAY,	// jth
-  TOKENIZER_TONE,		// jth
+  TOKENIZER_NOTE,		// jth
   TOKENIZER_MOVE,		// jth
   TOKENIZER_TURN,		// jth
   TOKENIZER_CAL,		// jth

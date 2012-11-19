@@ -673,15 +673,15 @@ static void display_statement(void)
 }
 
 /*---------------------------------------------------------------------------*/
-// tone_statement : sound note for a set duration of 0.1sec
+// note_statement : sound note for a set duration of 0.1sec
 // ==============
 //
-static void tone_statement(void) 
+static void note_statement(void) 
 {
 	uint8_t note;
 	uint16_t duration;
 	
-	accept(TOKENIZER_TONE);
+	accept(TOKENIZER_NOTE);
 	note = expr();
 	duration = expr() * 100;	// convert duration to mS
 	set_tone(note, duration);
@@ -789,8 +789,8 @@ static void statement(void)
 	case TOKENIZER_DISPLAY:
 		display_statement();
 		break;
-	case TOKENIZER_TONE:
-		tone_statement();
+	case TOKENIZER_NOTE:
+		note_statement();
 		break;
 	case TOKENIZER_MOVE:
 		move_statement();

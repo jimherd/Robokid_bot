@@ -78,8 +78,8 @@ static const struct keyword_token keywords[] = {
   {"se", 		TOKENIZER_SENSE}, 	// jth 
   {"read", 		TOKENIZER_READ},	// jth 
   {"re", 		TOKENIZER_READ},  	// jth 
-  {"tone", 		TOKENIZER_TONE},	// jth 
-  {"tn", 		TOKENIZER_TONE},    // jth 
+  {"note", 		TOKENIZER_NOTE},	// jth 
+  {"no", 		TOKENIZER_NOTE},    // jth 
   {NULL, 		TOKENIZER_ERROR}
 };
 
