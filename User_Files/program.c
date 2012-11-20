@@ -1558,108 +1558,12 @@ uint8_t		  start_ptr, end_ptr, i, status; // , in_ptr, out_ptr
 //		b. remove '#' comments
 //		c. leave '-----' strings untouched
 //
-	status = squeeze_line(line);
-	
-//	scan_state = L_START;
-//	in_ptr = 0;
-//	out_ptr = 0;
-//	FOREVER {
-//		if (in_ptr >= (TEMP_STRING_SIZE - 1)) {
-//			status = LINE_USEFUL;		// check to ensure that scan does not overrun end of buffer
-//			scan_state = L_EXIT;			
-//		}
-//		switch (scan_state) {
-//		case L_START :
-//			if (line[in_ptr] == ' ') {
-//				in_ptr++;
-//			} else if (line[in_ptr] == '\n') {
-//				line[out_ptr] = '\n';
-//				line[out_ptr+1] = '\0';
-//				status = LINE_BLANK;
-//				scan_state = L_EXIT;
-//			} else {
-//				scan_state = L_SCAN;
-//			}
-//			break;
-//		case L_SCAN:
-//			switch (line[in_ptr]) {   // check for specific characters
-//			case '#':
-//				line[out_ptr] = '\n';
-//				line[out_ptr+1] = '\0';
-//				if (out_ptr == 0) {
-//					status = LINE_BLANK;
-//				} else {
-//					status = LINE_USEFUL;
-//				}
-//				scan_state = L_EXIT;
-//				break;
-//			case '\'':
-//				line[out_ptr++] = line[in_ptr++];
-//				scan_state = L_COPY_STRING;
-//				break;
-//			case ' ':
-//				line[out_ptr++] = line[in_ptr++];
-//				scan_state = L_SKIP_SPACES;
-//				break;
-//			case '\n':
-//				line[out_ptr] = line[in_ptr];
-//				line[out_ptr+1] = '\0';
-//				if (out_ptr == 0) {
-//					status = LINE_BLANK;
-//					scan_state = L_EXIT;
-//				} else {
-//					status = LINE_USEFUL;
-//					scan_state = L_EXIT;
-//				}
-//				break;
-//			default:
-//				line[out_ptr++] = line[in_ptr++];
-//			}
-//			break;
-//		case L_COPY_STRING:
-//			if (line[in_ptr] == '\'') {
-//				scan_state = L_SCAN;
-//			}
-//			line[out_ptr++] = line[in_ptr++];
-//			break;
-//		case L_SKIP_SPACES:
-//			switch (line[in_ptr]) {   // check for specific characters
-//			case ' ':
-//				in_ptr++;
-//				break;
-//			case '#':
-//				line[out_ptr-1] = '\n';
-//				line[out_ptr] = '\0';
-//				status = LINE_USEFUL;
-//				scan_state = L_EXIT;
-//				break;
-//			case '\'':
-//				line[out_ptr++] = line[in_ptr++];
-//				scan_state = L_COPY_STRING;
-//				break;
-//			case '\n':
-//				line[out_ptr-1] = '\'';
-//				line[out_ptr] = '\n';
-//				line[out_ptr+1] = '\0';		
-//				scan_state = L_EXIT;
-//				break;
-//			default:    // all other characters
-//				line[out_ptr++] = line[in_ptr++];
-//				scan_state = L_SCAN;
-//				break;
-//			}
-//			break;
-//		case L_EXIT:
-//			return status;
-//			break;
-//		}
-//	}
-	
+	status = squeeze_line(line);	
 //
 // 4. Replace ubasic+ reserved words with two letter equivalents
 //
-// After running the Mealy machine, reserved words will start in location 0.
-// If location 1 is also a letter then it is a reserved word and can be
+// After running the state machine, reserved words will start in character position 0.
+// If position 1 is also a letter then it must be a reserved word and can be
 // replaced by a word with the first two letters. If the second character is
 // not a letter then it must be a variable and therefore leave as is.
 //
@@ -1668,7 +1572,7 @@ uint8_t		  start_ptr, end_ptr, i, status; // , in_ptr, out_ptr
 			for (i=2 ; line[i] != ' ' ; i++) {
 				line[i] = ' ';				
 			}
-			squeeze_line(line);
+			squeeze_line(line);		// rerun state machine to remove spaces
 		}
 	}
 	return status;
