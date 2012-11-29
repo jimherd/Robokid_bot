@@ -1527,8 +1527,7 @@ int8_t    line_type;
 //   
 int8_t trim_line(char line[]) {
 	
-uint8_t		  start_ptr, end_ptr, i, status; // , in_ptr, out_ptr
-//line_scan_t	  scan_state;
+uint8_t		  start_ptr, end_ptr, i, status;
 //
 // 1. Initialise start and end buffer pointers
 //
@@ -1553,7 +1552,7 @@ uint8_t		  start_ptr, end_ptr, i, status; // , in_ptr, out_ptr
 		}
 	}
 //
-// 3. run MEALY state machine to 
+// 3. run  state machine to 
 //		a. remove additional spaces
 //		b. remove '#' comments
 //		c. leave '-----' strings untouched
@@ -1712,7 +1711,9 @@ char		ch;
 		ch = string[ptr++];
 		shared.ubasicp_program_space[buffer_ptr++] = ch;
 	} while (ch != '\n');
+	
 	shared.ubasicp_program_space[buffer_ptr] = '\0';   // put NULL at end of program text
+	
 	return buffer_ptr;
 }
 
