@@ -349,7 +349,7 @@ typedef enum
 } program_mode_t;
 
 #define   FIRST_PROGRAM_MODE  PROGRAM_MODE_0
-#define   LAST_PROGRAM_MODE   PROGRAM_MODE_1
+#define   LAST_PROGRAM_MODE   PROGRAM_MODE_4
 
 typedef enum {PLAY, COLLECT, SAVE, RECALL, DUMP} sequence_mode_t;
 

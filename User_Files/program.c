@@ -1489,23 +1489,24 @@ int8_t    line_type;
 //  Read lines of characters from the serial port
 //
     FOREVER {
-    	get_line(tempstring);
-    	line_type = trim_line(tempstring);				// remove padding
-    	if (tempstring[0] == UBASIC_TERMINATOR) {	// @ = end of program transfer
+    	get_line(cmd_string);
+    	line_type = trim_line(cmd_string);		    // remove padding
+    	send_msg(cmd_string);                       // send squeezed string back to sender
+    	if (cmd_string[0] == UBASIC_TERMINATOR) {	// @ = end of program transfer
     		break;
     	}
-    	if (line_type == LINE_BLANK) {          // don't store blank lines
+    	if (line_type == LINE_BLANK) {              // don't store blank lines
     		continue;
     	}
-    	if (line_type == LINE_NO_TERM) {		// problem
+    	if (line_type == LINE_NO_TERM) {		    // problem
     		break;
     	}
-    	string_ptr = store_line(string_ptr, tempstring);
+    	string_ptr = store_line(string_ptr, cmd_string);
     }
 //
 // ensure that ubasicp program has a null terminator
 //
-	tempstring[string_ptr] = '\0';
+	cmd_string[string_ptr] = '\0';
 //
 // Store buffer in FLASH (dumps entire buffer)
 //
@@ -1529,25 +1530,31 @@ int8_t trim_line(char line[]) {
 	
 uint8_t		  start_ptr, end_ptr, i, status;
 //
-// 1. Initialise start and end buffer pointers
+// 1. Initialise start and end buffer pointers 
+//    and check for a line of data with no '\n' terminator
 //
 	start_ptr = 0;
 	end_ptr = 0;
+	status = LINE_NO_TERM;
 	for (i=0 ; i < TEMP_STRING_SIZE ; i++) {
 		if (line[i] != '\n') {
 			end_ptr++;
 		} else {
+			status = LINE_USEFUL;
 			break;
 		}
 	}
-	if (end_ptr == 0) {
+	if (status == LINE_NO_TERM) {
 		return LINE_NO_TERM;
 	}
 //
-// 2. convert all tab characters to space characters
+// 2. convert all tab and carriage return characters to space characters
 //
 	for (i=0 ; i < TEMP_STRING_SIZE ; i++) {
 		if (line[i] == '\t') {
+			line[i] = ' ';
+		}
+		if (line[i] == '\r') {
 			line[i] = ' ';
 		}
 	}
