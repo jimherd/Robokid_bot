@@ -166,5 +166,6 @@ extern union {
 	
 } shared;
 
+extern uint8_t  ubasicp_program_store;
 
 #endif /* __global_H */

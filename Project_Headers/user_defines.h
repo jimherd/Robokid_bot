@@ -404,7 +404,16 @@ typedef enum {
 //
 #define  NOS_STORED_PROGRAMS	   4
 #define  PROG_BUFFER_SIZE		1024
+
 #define	 UBASIC_TERMINATOR		 '@'
+#define  SYS_CMD_CHAR			 '%'
+
+#define  SET_PROG_STORE			 'P'
+
+#define  SYS_CMD				  0
+#define	 UBASICP_CODE			  1
+
+#define  MAX_PROGRAM_NUMBER		  3
 
 
 #endif

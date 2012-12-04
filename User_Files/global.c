@@ -26,8 +26,6 @@ uint8_t          init_mode;
 error_codes_t    sys_error;
 uint8_t          left_motor_tweak, right_motor_tweak;
 
-
-
 seven_seg_display_t   display_buff;
 //
 // general purpose character string
@@ -223,8 +221,10 @@ union {
 //	} RAM_sequence;
 	
 } shared;
-
-
+//
+// holds current ubasic+ active store
+//
+uint8_t  ubasicp_program_store;
 
 
 

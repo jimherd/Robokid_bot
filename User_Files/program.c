@@ -1490,6 +1490,11 @@ int8_t    line_type;
 //
     FOREVER {
     	get_line(cmd_string);
+    	if (check_line(cmd_string) == SYS_CMD) {
+    		send_msg(cmd_string);
+    		process_sys_cmd(cmd_string);
+    		continue;
+    	}
     	line_type = trim_line(cmd_string);		    // remove padding
     	send_msg(cmd_string);                       // send squeezed string back to sender
     	if (cmd_string[0] == UBASIC_TERMINATOR) {	// @ = end of program transfer
@@ -1513,6 +1518,50 @@ int8_t    line_type;
 	save_ubasicp_program(0);
 	
     return 0;
+}
+
+//----------------------------------------------------------------------------
+// check_line : Is line part of a ubasic+ program or a system command
+// ==========
+//
+// Description
+//		System commands have a '%' character in the first column
+//
+// Notes
+//   
+uint8_t check_line(char line[]) 
+{
+	if (line[0] == SYS_CMD_CHAR) {
+		return SYS_CMD;
+	}
+	return UBASICP_CODE;
+}
+
+//----------------------------------------------------------------------------
+// process_sys_cmd : Execute a command send with a ubasic+ program
+// ===============
+//
+// Description
+//		A downloaded ubasic+ program can contain some system commands
+//
+//		%Pn    	set store 'n' as FLASH destination for next program to be downloaded.
+//				Value can be in range 0 to 3.  Default is 0.
+//
+// Notes
+//   
+uint8_t process_sys_cmd(char line[]) {
+	
+	switch (line[1]) {
+	case SET_PROG_STORE :
+		ubasicp_program_store = line[2] - '0';
+		if (ubasicp_program_store > (NOS_STORED_PROGRAMS - 1)) {        // default to 0 if error
+			ubasicp_program_store = 0;
+		}
+		break;
+	default :
+		break;
+	}
+	return 0;
 }
 
 //----------------------------------------------------------------------------
