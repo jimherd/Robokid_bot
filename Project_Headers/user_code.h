@@ -23,6 +23,7 @@ int16_t abs16(int16_t  value);
 void self_test(void);
 void run_bot(void);
 void check_for_power_on_test(void);
+uint8_t  check_computer_link(void);
 
 //
 // Definition of structure of data in the FLASH constant area

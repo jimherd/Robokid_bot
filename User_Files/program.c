@@ -1428,7 +1428,7 @@ sequence_mode_t   seq_mode;
         push_LED_display();       
         switch (seq_mode) {
             case PLAY :
-                play_sequence();
+            	run_ubasicp_program(&FLASH_programs[ubasicp_program_store][0]);
                 break;            
             case COLLECT :
                 get_ubasicp_program();
@@ -1449,6 +1449,7 @@ sequence_mode_t   seq_mode;
         pop_LED_display();
     }                         // end of FOREVER loop
 }
+
 
 //----------------------------------------------------------------------------
 // get_ubasicp_program : read a program from the serial port
@@ -1511,11 +1512,11 @@ int8_t    line_type;
 //
 // ensure that ubasicp program has a null terminator
 //
-	cmd_string[string_ptr] = '\0';
+    shared.ubasicp_program_space[string_ptr] = '\0';
 //
 // Store buffer in FLASH (dumps entire buffer)
 //
-	save_ubasicp_program(0);
+	save_ubasicp_program(ubasicp_program_store);
 	
     return 0;
 }
@@ -1784,6 +1785,7 @@ char		ch;
 // Notes
 //		The microcontroller FLASH memory is speced for > 100,000 program/erase
 //		cycles.
+//      Execution is done from FLASH memory.
 //
 //	@param[in]	flash_seq_no	program number (typ. 0 to 3)
 //  
@@ -1802,11 +1804,11 @@ uint16_t	  count;
 //
 // FLASH write page
 //
-	byte_ptr = (uint16_t)&FLASH_programs[flash_seq_no];
+	byte_ptr = (uint16_t)&FLASH_programs[flash_seq_no][0];
 
-    FlashErasePage(byte_ptr);
+    FlashErasePage((uint16_t)&FLASH_programs[flash_seq_no][0]);       
     for (count = 0 ; count < PROG_BUFFER_SIZE ; count++) {
-        FlashProgramByte(byte_ptr, shared.ubasicp_program_space[count]);
+        FlashProgramByte(byte_ptr++, shared.ubasicp_program_space[count]);
     }
 }
 

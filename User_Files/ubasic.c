@@ -823,6 +823,22 @@ void ubasic_run(void)
     statement();        //modified to eliminate line numbers
 	// line_statement();
 }
+
+//----------------------------------------------------------------------------
+// run_ubasicp_program : run a ubasic test script
+// ===================
+//
+// Notes
+//
+uint8_t run_ubasicp_program(char *program) {
+
+	ubasic_init(&script1[0]);
+	do{
+		ubasic_run();
+	} while(!ubasic_finished());
+	return 0;
+}
+
 /*---------------------------------------------------------------------------*/
 uint8_t ubasic_finished(void) 
 {

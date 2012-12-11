@@ -145,6 +145,10 @@ void user_init(void) {
     
     DelayMs(1000);
 //
+// set default program store as 0 (range is 0->3)
+//
+    ubasicp_program_store = 0;
+//
 // self test
 //
     self_test();
@@ -540,7 +544,8 @@ uint16_t  ticks;
         load_display(&bat_lo);
         play_tune(&snd_battery_low);
         DelayMs(20000);
-    }    
+    } 
+
     load_display(&robot);
 //
 // user must press switch A to continue
@@ -550,6 +555,13 @@ uint16_t  ticks;
         if (switch_A == PRESSED) {
             WAIT_SWITCH_RELEASED(switch_A);
             break;
+        }
+        //
+        // Check to see if there is a computer connected to the robot.
+        // If there is then get ubasic+ program
+        //
+        if (check_computer_link() == YES) {
+        	get_ubasicp_program();
         }
     }
     SOUND_SYSTEM_INIT;
@@ -620,6 +632,32 @@ uint16_t  ticks;
             }
         }  
     }
+}
+
+//----------------------------------------------------------------------------
+// check_computer_link : check for computer connected to serial port
+// ===================
+//
+// Description
+//     If there is a suitable computer attached to the serial port with a 
+//	   running communications program then jump directly to the ubasic+
+//     download routine.
+//     The check is made by looking for a '%' character in the read buffer. If found,
+//     reply with an '&' character.
+//     If no character is detected within one second, then the normal mode of operation
+//     is initiated.
+//
+//
+uint8_t  check_computer_link(void)
+{
+uint8_t  rec_char;
+	
+	rec_char = SCI1D;        	// get received character
+	if (rec_char == '%') {
+		send_msg("&\r\n");       // reply handshake
+		return YES;
+	}
+	return NO;
 }
 
 /* END user_code */
