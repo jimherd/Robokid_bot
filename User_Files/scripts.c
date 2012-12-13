@@ -12,8 +12,8 @@
 //                       
 //----------------------------------------------------------------------------
 
-#pragma INTO_ROM
-char script1[] =
+// #pragma INTO_ROM
+const char script1[] =
 "# comment ;\n\
 for a=1 to 2{\n\
 	leds 1 0 1 0;\n\
@@ -35,7 +35,7 @@ motors 0 0;\n\
 text \'end \';\n\
 end;\n";
 
-#pragma INTO_ROM
+// #pragma INTO_ROM
 const char script0[] =
 "1 text \"Script1\"\n\
 6 let h = 50\n\

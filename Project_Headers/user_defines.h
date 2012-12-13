@@ -415,5 +415,33 @@ typedef enum {
 
 #define  MAX_PROGRAM_NUMBER		  3
 
+typedef enum {CMD_FORWARD = 10, CMD_BACKWARD, CMD_SPIN_LEFT, CMD_SPIN_RIGHT, CMD_STOP } cmd_t;
+#define   FIRST_CMD     CMD_FORWARD
+#define   LAST_CMD      CMD_SPIN_RIGHT
+
+typedef enum { PUSH_16, PUSH_L8, PUSH_H8, POP_8, POP_16, SET_PARAMETER, 
+       COMPUTE, GOTO, EXECUTE, DEC_AND_SKIP, TEST_AND_SKIP, READ_CHAN, EXIT, DELAY,
+} instruction_t;
+
+enum { SPEED, DISTANCE, TIME, };
+enum { ADD, };
+enum { MOVE_TIME, MOVE_DISTANCE, START, STOP };
+enum { EQ, LT, GT };
+enum { NO, YES };
+    
+//
+// instruction modifiers
+//
+#define   NO_MOD       0
+#define   IMMEDIATE    0
+#define   REGISTER     1
+#define   STACK        2
+
+#define   ABSOLUTE           0
+#define   RELATIVE_PLUS      1
+#define   RELATIVE_MINUS     2
+
+#define   NO_DATA      0
+
 
 #endif

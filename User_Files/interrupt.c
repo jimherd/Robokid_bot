@@ -41,7 +41,7 @@ uint8_t     display_no;
 uint16_t    left_wheel_count, right_wheel_count;
 uint8_t     left_wheel_sensor_value, right_wheel_sensor_value;
 uint8_t     left_speed_index, right_speed_index;
-uint16_t    left_speed_array[64], right_speed_array[64];
+//uint16_t    left_speed_array[64], right_speed_array[64];
 //
 // sound system data
 //

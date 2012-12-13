@@ -12,7 +12,7 @@
 //    
 typedef struct  {
     uint8_t   mode, note_count;
-    uint8_t   note[64][2];
+    uint8_t   note[32][2];
 } sound_file_t;
 
 enum {SOUND_DISABLE, SOUND_ENABLE};

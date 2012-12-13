@@ -300,7 +300,7 @@ mode_state_t    state;
 
 uint8_t run_lab_mode_2(void) 
 {
-    run_sequence(program_a);
+ //   run_sequence(program_a);
     return 0;
 }
 

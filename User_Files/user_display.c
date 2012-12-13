@@ -506,7 +506,7 @@ void set_flash_rate(uint8_t  rate)
 //
 void flash_LED(uint8_t  LED_code, uint8_t  count) 
 {
-int     i;
+uint8_t     i;
 
     for (i= 0 ; i<count ; i++) {
         set_LED(LED_code, FLASH_OFF);

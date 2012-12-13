@@ -14,24 +14,30 @@
 #include    "global.h"
 
 //----------------------------------------------------------------------------
-// Global variables
+// Global variables : place as many variables as possible in 'direct page' (0->0x100)
 //
+#pragma DATA_SEG __SHORT_SEG MY_ZEROPAGE
+
 uint16_t         gRight_Speed, gLeft_Speed, current_right_speed, current_left_speed, current_speed;
 uint8_t          left_PWM, right_PWM, new_left_PWM, new_right_PWM;
-uint16_t         left_motor_state, right_motor_state;
+uint8_t          left_motor_state, right_motor_state;
 vehicle_state_t  state_of_vehicle;
 uint16_t         straight_line_speed, turn_speed;
 uint8_t          pwm_differential;
 uint8_t          init_mode;
 error_codes_t    sys_error;
 uint8_t          left_motor_tweak, right_motor_tweak;
-
-seven_seg_display_t   display_buff;
 //
 // general purpose character string
 //
 char   tempstring[TEMP_STRING_SIZE];
 char   cmd_string[TEMP_STRING_SIZE];
+
+#pragma DATA_SEG DEFAULT
+
+
+seven_seg_display_t   display_buff;
+
 //
 // In RAM copy FLASH data
 //
@@ -183,11 +189,11 @@ const seven_seg_display_t  zero_display = {
 //
 // decompressed robot command data structure
 //
-struct  {
-    uint8_t     op_code;
-    uint8_t     modifier;
-    uint16_t    data;
-} robot_command;
+//struct  {
+//    uint8_t     op_code;
+//    uint8_t     modifier;
+//    uint16_t    data;
+//} robot_command;
 //
 // RAM store for current sequence
 //
@@ -201,11 +207,11 @@ struct  {
 //
 // The AW60 device has 2kbytes of RAM.  There is a requirement for some large RAM based data structures.
 // If allocated individually, they will use more the the available 2kbytes.  Therefore, the following
-// UNION structure will allow these to share a single RAM area of 1kbyte.  Clearly, this only works
+// UNION structure will allow these to share a single RAM area of 0.5kbyte.  Clearly, this only works
 // if the individual structures are accessed in a mutually exclusive manner.
 //
 union {
-	// storage for ubasic+ program
+	// storage for received ubasic+ program (not used when script is run)
 	char	ubasicp_program_space[512]; 
 	
 	// storage for data read from strip programming
@@ -213,6 +219,12 @@ union {
 		uint8_t cmd_data[MAX_STRIP_CMDS * 2];
 		uint8_t strip_data[MAX_STRIP_CMDS][2];
 	} seq;
+	
+	// storage for temporary data when ubasic+ interpreter is run
+	struct {
+		char    string[80];
+		int16_t variables[MAX_VARNUM];
+	} ubasicp_data;
 //	
 //	// storage for robot sequence commands
 //	union {
@@ -225,6 +237,15 @@ union {
 // holds current ubasic+ active store
 //
 uint8_t  ubasicp_program_store;
+//
+// global data for ubasic+ interpreter
+//
+char const *program_ptr;
+uint8_t ended;
+
+
+int16_t variables[MAX_VARNUM];
+
 
 
 

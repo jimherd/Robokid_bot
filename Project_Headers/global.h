@@ -40,7 +40,7 @@
 #include "sketch.h"
 #include "lab.h"
 #include "distance.h"
-#include "interpreter.h"
+// #include "interpreter.h"
 
 #include "tokenizer.h"
 #include "ubasic.h"
@@ -50,13 +50,13 @@
 //
 extern   FLASH_data_t   FLASH_data;
 extern   FLASH_data_t   FLASH_data_image;
-extern   uint16_t       FLASH_SEQ_0[256];
+// extern   uint16_t       FLASH_SEQ_0[256];
 //
 // extern definitions to global variables
 //
 extern  uint16_t         gRight_Speed, gLeft_Speed, current_right_speed, current_left_speed, current_speed;
 extern  uint8_t          left_PWM, right_PWM, new_left_PWM, new_right_PWM;
-extern  uint16_t         left_motor_state, right_motor_state;
+extern  uint8_t          left_motor_state, right_motor_state;
 extern  vehicle_state_t  state_of_vehicle;
 extern  uint16_t         straight_line_speed, turn_speed;
 extern  uint8_t          pwm_differential;
@@ -80,9 +80,7 @@ extern  uint8_t     LED_image, display_image, swap_image, LED_flash_map, display
 extern  uint16_t    left_wheel_count, right_wheel_count;
 extern  uint8_t     left_wheel_sensor_value, right_wheel_sensor_value;
 extern  uint8_t     left_speed_index, right_speed_index;
-extern  uint16_t    left_speed_array[64], right_speed_array[64];
-
-//extern  char ubasic_program_space[128];
+//extern  uint16_t    left_speed_array[64], right_speed_array[64];
 
 extern  seven_seg_display_t    robot_display;
 extern  const uint8_t          seven_segment_codes[];
@@ -132,7 +130,6 @@ extern const sound_file_t   snd_bump;
 
 extern  const seven_seg_display_t  zero_display;
 
-extern const uint16_t  program_a[50];
 
 extern struct  {
     uint8_t     op_code;
@@ -148,6 +145,8 @@ extern struct  {
 
 extern uint8_t     FLASH_programs[NOS_STORED_PROGRAMS][PROG_BUFFER_SIZE];
 
+#define MAX_VARNUM 26
+
 extern union {
 	// storage for ubasic program
 	char	ubasicp_program_space[512]; 
@@ -158,6 +157,12 @@ extern union {
 		uint8_t strip_data[MAX_STRIP_CMDS][2];
 	} seq;
 	
+	// storage for temporary data when ubasic+ interpreter is run
+	struct {
+		char    string[80];
+		int16_t variables[MAX_VARNUM];
+	} ubasicp_data;
+	
 //	// storage for robot sequence commands
 //	union {
 //		uint16_t uint16[RAM_SEQUENCE_SIZE];
@@ -167,5 +172,20 @@ extern union {
 } shared;
 
 extern uint8_t  ubasicp_program_store;
+
+//
+// global data for ubasic+ interpreter
+//
+extern  char const *program_ptr;
+extern  uint8_t ended;
+
+//#define MAX_STRINGLEN 40
+//extern  char string[MAX_STRINGLEN];
+//
+// storage for ubasic+ variables (a..e)
+//
+
+//extern  int16_t variables[MAX_VARNUM];
+
 
 #endif /* __global_H */

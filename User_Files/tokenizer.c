@@ -59,6 +59,7 @@ static const struct keyword_token keywords[] = {
   {"to", 		TOKENIZER_TO},
 //  {"return",	TOKENIZER_RETURN},
   {"end", 		TOKENIZER_END},
+  {"en", 		TOKENIZER_END},     // jth
   
   {"while", 	TOKENIZER_WHILE}, 	// brl4
   {"wh", 		TOKENIZER_WHILE},	// jth

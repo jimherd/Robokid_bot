@@ -44,19 +44,7 @@
 
 #include "global.h"
 
-static char const *program_ptr;
-#define MAX_STRINGLEN 40
-static char string[MAX_STRINGLEN];
 
-#define MAX_VARLEN 4
-#define MAX_VARNUM 26
-static int16_t variables[MAX_VARNUM];
-
-static uint8_t ended;
-
-static int16_t expr(void);
-//static void line_statement(void);
-static void statement(void);
 
 
 /*---------------------------------------------------------------------------*/
@@ -215,10 +203,9 @@ static void print_statement(void)
 {
 	accept(TOKENIZER_PRINT);
 	do {
-        // DEBUG_PRINTF("Print loop\n");
 		if(tokenizer_token() == TOKENIZER_STRING) {
-			tokenizer_string(string, sizeof(string));
-			send_msg(string);
+			tokenizer_string(shared.ubasicp_data.string, sizeof(shared.ubasicp_data.string));
+			send_msg(shared.ubasicp_data.string);
 			tokenizer_next();
 		} else if(tokenizer_token() == TOKENIZER_COMMA) {
 			send_msg(" ");
@@ -227,7 +214,7 @@ static void print_statement(void)
 		//	tokenizer_next();
 		} else if((tokenizer_token() == TOKENIZER_VARIABLE) ||
                   (tokenizer_token() == TOKENIZER_NUMBER)) {
-						send_msg(bcd(expr(), tempstring));
+						send_msg(bcd(expr(), shared.ubasicp_data.string));
 		} else {
 			break;
 		}
@@ -361,17 +348,17 @@ static void for_statement(void)
 
     // record the next token search location
     for_ptr = tokenizer_ptr();
-    while (variables[for_variable] <= to) {
+    while (shared.ubasicp_data.variables[for_variable] <= to) {
         tokenizer_next();
         statement();
         // more than one statement?
         while (tokenizer_token() != TOKENIZER_RIGHTBRACK) {
             statement();
         }
-        variables[for_variable]++ ;
+        shared.ubasicp_data.variables[for_variable]++ ;
         for_value = ubasic_get_variable(for_variable);
         ubasic_set_variable(for_variable, ++for_value);
-        if (variables[for_variable] <= to) {
+        if (shared.ubasicp_data.variables[for_variable] <= to) {
             tokenizer_ptr_set(for_ptr);
         }
     }
@@ -576,13 +563,14 @@ uint8_t  channel, value, var;
 //
 static void motors_statement(void) 
 {
-int16_t  temp;
+uint16_t  temp;
 	
 	accept(TOKENIZER_MOTORS);
 	//
 	// 1st parameter defines action on LEFT motor
 	//
-	temp = expr();
+//	temp = expr();
+	temp = tokenizer_num();
     if (temp == 0) {
 		set_motor(LEFT_MOTOR, MOTOR_BRAKE, 0);
 	} else if (temp == 1) {
@@ -590,10 +578,11 @@ int16_t  temp;
 	} else if (temp == 2) {
 		set_motor(LEFT_MOTOR, MOTOR_BACKWARD, gLeft_Speed);
 	}
+    accept(TOKENIZER_NUMBER);
 	//
 	// 2nd parameter defines action on RIGHT motor
 	//
-	temp = expr();
+	temp = tokenizer_num();
     if (temp == 0) {  
         set_motor(RIGHT_MOTOR, MOTOR_BRAKE, 0);
     } else if (temp == 1) {	
@@ -601,7 +590,7 @@ int16_t  temp;
 	} else if (temp == 2) {
 		set_motor(RIGHT_MOTOR, MOTOR_BACKWARD, gRight_Speed);
 	}	
-
+    accept(TOKENIZER_NUMBER);
 	accept(TOKENIZER_CR);
 }
 
@@ -664,8 +653,8 @@ static void display_statement(void)
 	accept(TOKENIZER_DISPLAY);
 	do {
 		if(tokenizer_token() == TOKENIZER_STRING) {
-			tokenizer_string(string, sizeof(string));
-			display_string(string, SEVEN_SEG_AB);
+			tokenizer_string(shared.ubasicp_data.string, sizeof(shared.ubasicp_data.string));
+			display_string(shared.ubasicp_data.string, SEVEN_SEG_AB);
 			tokenizer_next();
 		} 
 	} while((tokenizer_token() != TOKENIZER_CR) && (tokenizer_token() != TOKENIZER_ENDOFINPUT));
@@ -832,7 +821,7 @@ void ubasic_run(void)
 //
 uint8_t run_ubasicp_program(char *program) {
 
-	ubasic_init(&script1[0]);
+	ubasic_init(program);
 	do{
 		ubasic_run();
 	} while(!ubasic_finished());
@@ -847,14 +836,14 @@ uint8_t ubasic_finished(void)
 /*---------------------------------------------------------------------------*/
 void ubasic_set_variable(uint8_t varnum, int16_t value) {
 	if (varnum > 0 && varnum <= MAX_VARNUM) {
-		variables[varnum] = value;
+		shared.ubasicp_data.variables[varnum] = value;
 	}
 }
 /*---------------------------------------------------------------------------*/
 int16_t ubasic_get_variable(uint8_t varnum) 
 {
 	if ((varnum > 0) && (varnum <= MAX_VARNUM)) {
-		return variables[varnum];
+		return shared.ubasicp_data.variables[varnum];
 	}
 	return 0;
 }
