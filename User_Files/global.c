@@ -225,6 +225,9 @@ union {
 		char    string[80];
 		int16_t variables[MAX_VARNUM];
 	} ubasicp_data;
+	
+	// stored data for wheel calibration
+	uint16_t    left_speed_array[64], right_speed_array[64];
 //	
 //	// storage for robot sequence commands
 //	union {

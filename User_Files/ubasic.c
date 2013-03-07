@@ -28,7 +28,7 @@
  *
  */
  //////////////////////////////////////////////////////
- // modifed by Bruce Land, cornell university, may 2010
+ // modifed by Bruce Land, Cornell university, may 2010
  // control structures changed to block-oriented
  //
  // Jim Herd : added code for Robokid robot
@@ -43,9 +43,6 @@
 //#endif
 
 #include "global.h"
-
-
-
 
 /*---------------------------------------------------------------------------*/
 void ubasic_init(char *program) 

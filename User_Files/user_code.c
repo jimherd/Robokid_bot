@@ -647,7 +647,6 @@ uint16_t  ticks;
 //     If no character is detected within one second, then the normal mode of operation
 //     is initiated.
 //
-//
 uint8_t  check_computer_link(void)
 {
 uint8_t  rec_char;
