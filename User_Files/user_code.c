@@ -508,10 +508,18 @@ uint8_t   value_1, value_2;
 void run_bot(void) {
 
 static sys_modes_t  mode, last_mode;
-uint8_t   ad_value;
+uint8_t   ad_value, PC_connection;
 uint16_t  ticks;
 
     user_init();
+//
+// Check USB link for attached computer. Run separate code if link is available.
+//
+    PC_connection = check_for_computer_link();
+    if (PC_connection == YES) {
+    	run_PC_link();
+    	return;
+    }
 //
 // output message on serial port
 //    
@@ -557,13 +565,6 @@ uint16_t  ticks;
         if (switch_A == PRESSED) {
             WAIT_SWITCH_RELEASED(switch_A);
             break;
-        }
-        //
-        // Check to see if there is a computer connected to the robot.
-        // If there is then get ubasic+ program
-        //
-        if (check_computer_link() == YES) {
-        	get_ubasicp_program();
         }
     }
     SOUND_SYSTEM_INIT;
@@ -637,25 +638,43 @@ uint16_t  ticks;
 }
 
 //----------------------------------------------------------------------------
-// check_computer_link : check for computer connected to serial port
-// ===================
+// run_PC_link : run with connection to PC
+// ===========
 //
 // Description
-//     If there is a suitable computer attached to the serial port with a 
-//	   running communications program then jump directly to the ubasic+
-//     download routine.
-//     The check is made by looking for a '%' character in the read buffer. If found,
-//     reply with an '&' character.
-//     If no character is detected within one second, then the normal mode of operation
-//     is initiated.
+//		Robokid aware PC is active on serial link.
+//		Initially, only for the download of ubasic+ programs.
+//       
+void run_PC_link(void) {
+	
+	FOREVER {
+		get_line(cmd_string);
+    	if (check_line(cmd_string) == SYS_CMD) {
+    		send_msg(cmd_string);
+    		process_sys_cmd(cmd_string);
+    		continue;
+    	}
+	}
+}
+
+//----------------------------------------------------------------------------
+// check_for_computer_link : check for computer connected to serial port
+// =======================
 //
-uint8_t  check_computer_link(void)
+// Description
+//     If there is a suitable computer attached to the serial port it will require
+//     to respond to a send sync character ('S').  After a short delay a check is 
+//     made for a response character ('A'). Return appropriate YES or NO.
+//
+uint8_t  check_for_computer_link(void)
 {
 uint8_t  rec_char;
 	
+	send_msg("S\r\n");
+	DelayMs(USB_PC_SYNC_DELAY);
 	rec_char = SCI1D;        	// get received character
-	if (rec_char == '%') {
-		send_msg("&\r\n");       // reply handshake
+	if (rec_char == 'A') {
+		send_msg("C\r\n");       // reply handshake
 		return YES;
 	}
 	return NO;

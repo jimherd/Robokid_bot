@@ -118,6 +118,8 @@
 
 #define     DEFAULT_SAMPLE_TIME     100
 
+#define		USB_PC_SYNC_DELAY		500		// delay before checking sync return from PC
+
 #define     WAIT_1SEC       DelayMs(1000);
 
 //----------------------------------------------------------------------------

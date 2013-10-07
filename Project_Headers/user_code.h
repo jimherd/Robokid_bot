@@ -22,8 +22,9 @@ void vehicle_stop(void);
 int16_t abs16(int16_t  value);
 void self_test(void);
 void run_bot(void);
+void run_PC_link(void);
 void check_for_power_on_test(void);
-uint8_t  check_computer_link(void);
+uint8_t  check_for_computer_link(void);
 uint8_t  check_alternate_modes(void);
 
 //
