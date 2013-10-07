@@ -27,6 +27,7 @@ uint8_t          pwm_differential;
 uint8_t          init_mode;
 error_codes_t    sys_error;
 uint8_t          left_motor_tweak, right_motor_tweak;
+uint8_t			 global_mode;
 //
 // general purpose character string
 //

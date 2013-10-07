@@ -52,6 +52,7 @@
 #define     WAIT_SWITCH_PRESSED(switch_n)       while((switch_n) == RELEASED);
 #define     WAIT_ANY_SWITCH_PRESSED             while(switch_ABCD == ALL_RELEASED);
 #define     WAIT_ALL_SWITCHES_RELEASED          while(switch_ABCD != ALL_RELEASED);
+#define     GET_SWITCHES						(switch_ABCD >> 2)
 #define     PROMPT_SWITCH_A    set_LED(LED_A, FLASH_ON);WAIT_SWITCH_PRESSED(switch_A);WAIT_SWITCH_RELEASED(switch_A);clr_LED(LED_A);
 
 #define     BLACK            0
@@ -254,6 +255,11 @@
 #define     NOTE_AS    10
 #define     NOTE_B     11
 #define     SILENT_NOTE    12
+//
+//----------------------------------------------------------------------------
+// Top level system modes
+//
+typedef enum {SYS_NORMAL, SYS_COMP, SYS_TEST};
 
 //----------------------------------------------------------------------------
 // Motor action/state definitions

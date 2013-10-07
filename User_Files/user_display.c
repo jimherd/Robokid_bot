@@ -66,7 +66,7 @@ void display_init(void)
 //      display_struct : pointer to a 7-segment display structure
 //
 // Description
-//      Copy an pre-prepared 7-segment display structure into the working display 
+//      Copy a pre-prepared 7-segment display structure into the working display 
 //      structure. Most likely, the pre-prepared structure will be held in ROM
 //      space. 
 //

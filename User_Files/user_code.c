@@ -74,7 +74,7 @@ const seven_seg_display_t  bat_lo = {        // "bat_lo "
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 // user_init : initialisation of system variables
-// =========
+// ========
 //
 // Notes
 //      Use routine to initialise variables.
@@ -385,7 +385,7 @@ void self_test(void) {
 
 //----------------------------------------------------------------------------
 // check_for_test : check for the power-up test mode and execute command if acivated
-// ============
+// ==============
 //
 // Notes
 //      The power-on test mode is initited by shorting the central bump and rear bump
@@ -525,10 +525,6 @@ uint16_t  ticks;
     send_msg(bcd(ad_value, tempstring));
     send_msg("\r\n");
 //
-// check for possible start-up test mode
-//
-    check_for_power_on_test();
-//
 // check battery levels and do one of the following
 //
 //  1. battery level very low -> show recharge message. and halt
@@ -545,7 +541,13 @@ uint16_t  ticks;
         play_tune(&snd_battery_low);
         DelayMs(20000);
     } 
-
+//    
+// Check switches for possible mode change
+//
+    check_alternate_modes();
+    
+    check_for_power_on_test();
+    
     load_display(&robot);
 //
 // user must press switch A to continue
@@ -658,5 +660,31 @@ uint8_t  rec_char;
 	}
 	return NO;
 }
+
+//----------------------------------------------------------------------------
+// check_alternate_modes : check for switch request for alternative modes
+// =====================
+//
+// Description
+//     Pressing of switches as power switch is turned on will cause other modes
+//     to be enabled
+//
+uint8_t  check_alternate_modes(void)
+{
+	uint16_t ticks;
+	uint8_t  switches;
+	
+    if (switch_ABCD != ALL_RELEASED) {
+    	switches = GET_SWITCHES;
+        CLR_TIMER16;                        // clear 16-bit 8mS tick counter
+        WAIT_ALL_SWITCHES_RELEASED;         // wait until buttons returns to non-pressed state 
+        GET_TIMER16(ticks);                 // read 16-bit 8mS tick counter
+        if (ticks > (4 * TICKS_IN_ONE_SECOND)) {     // button press time > 4 seconds
+        	
+        }
+    }  
+	return 0;
+}
+
 
 /* END user_code */
