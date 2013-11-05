@@ -45,6 +45,7 @@
 #include "tokenizer.h"
 #include "ubasic.h"
 #include "scripts.h"
+#include "pc_link.h"
 //
 //
 //

@@ -412,16 +412,28 @@ typedef enum {
 //
 #define  NOS_STORED_PROGRAMS	   4
 #define  PROG_BUFFER_SIZE		1024
+#define  MAX_PROGRAM_NUMBER		   3
 
+//----------------------------------------------------------------------------
+// PC/USB link constants
+//
 #define	 UBASIC_TERMINATOR		 '@'
 #define  SYS_CMD_CHAR			 '%'
+//
+// PC to robot commands
+//
+#define	 READ_BUTTONS			'B' // read four push buttons
+#define	 DISPLAY_TEXT			'D' // show a string of chars on the 7-seg display
+#define  EXECUTE_PROG			'E' // run the program
+#define	 DISPLAY_LEDS			'L' // output to 4 LEDs
+#define  LOAD_PROG_STORE		'P'	// read in a ubasic+ program
+#define	 READ_SENSOR			'S' // read specified sensor
 
-#define  SET_PROG_STORE			 'P'
 
 #define  SYS_CMD				  0
 #define	 UBASICP_CODE			  1
 
-#define  MAX_PROGRAM_NUMBER		  3
+
 
 typedef enum {CMD_FORWARD = 10, CMD_BACKWARD, CMD_SPIN_LEFT, CMD_SPIN_RIGHT, CMD_STOP } cmd_t;
 #define   FIRST_CMD     CMD_FORWARD

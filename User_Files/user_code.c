@@ -513,14 +513,6 @@ uint16_t  ticks;
 
     user_init();
 //
-// Check USB link for attached computer. Run separate code if link is available.
-//
-    PC_connection = check_for_computer_link();
-    if (PC_connection == YES) {
-    	run_PC_link();
-    	return;
-    }
-//
 // output message on serial port
 //    
     send_msg("RoboKid Vehicle V1.0B\r\n");
@@ -549,14 +541,23 @@ uint16_t  ticks;
         play_tune(&snd_battery_low);
         DelayMs(20000);
     } 
+    load_display(&robot);
 //    
 // Check switches for possible mode change
 //
     check_alternate_modes();
-    
+//
+//
+//
     check_for_power_on_test();
-    
-    load_display(&robot);
+//
+// Check USB link for attached computer. Run separate code if link is available.
+//
+        PC_connection = check_for_computer_link();
+        if (PC_connection == YES) {
+        	run_PC_link();
+        	return;
+        }    
 //
 // user must press switch A to continue
 //
@@ -637,48 +638,8 @@ uint16_t  ticks;
     }
 }
 
-//----------------------------------------------------------------------------
-// run_PC_link : run with connection to PC
-// ===========
-//
-// Description
-//		Robokid aware PC is active on serial link.
-//		Initially, only for the download of ubasic+ programs.
-//       
-void run_PC_link(void) {
-	
-	FOREVER {
-		get_line(cmd_string);
-    	if (check_line(cmd_string) == SYS_CMD) {
-    		send_msg(cmd_string);
-    		process_sys_cmd(cmd_string);
-    		continue;
-    	}
-	}
-}
 
-//----------------------------------------------------------------------------
-// check_for_computer_link : check for computer connected to serial port
-// =======================
-//
-// Description
-//     If there is a suitable computer attached to the serial port it will require
-//     to respond to a send sync character ('S').  After a short delay a check is 
-//     made for a response character ('A'). Return appropriate YES or NO.
-//
-uint8_t  check_for_computer_link(void)
-{
-uint8_t  rec_char;
-	
-	send_msg("S\r\n");
-	DelayMs(USB_PC_SYNC_DELAY);
-	rec_char = SCI1D;        	// get received character
-	if (rec_char == 'A') {
-		send_msg("C\r\n");       // reply handshake
-		return YES;
-	}
-	return NO;
-}
+
 
 //----------------------------------------------------------------------------
 // check_alternate_modes : check for switch request for alternative modes
